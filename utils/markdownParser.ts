@@ -41,6 +41,7 @@ export interface JourneyContent {
   whyItMatters: string;
   finalRole: string;
   callToAction: string[];
+  related?: { title: string; slug: string; icon: string }[];
 }
 
 // Parse a markdown file and extract structured content
@@ -172,7 +173,8 @@ export async function parseJourneyMarkdown(filePath: string): Promise<JourneyCon
     rewards,
     whyItMatters,
     finalRole,
-    callToAction
+    callToAction,
+    related: []
   };
 }
 

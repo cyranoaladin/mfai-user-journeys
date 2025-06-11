@@ -7,6 +7,8 @@ import { getJourneyBySlug, getAllJourneys } from '../../utils/markdownParser';
 import { JourneyContent } from '../../utils/markdownParser';
 import ProofBadge from '../../components/Journey/ProofBadge';
 import ZynoTeaser from '../../components/Journey/ZynoTeaser';
+import ProofStack from '../../components/Journey/ProofStack';
+import SkillchainMap from '../../components/Journey/SkillchainMap';
 import { useStore } from '../../utils/store';
 
 /**
@@ -27,13 +29,13 @@ const JourneyDetailPage: FC<JourneyDetailPageProps> = ({ journey }) => {
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
   const { walletConnected, walletAddress } = useStore();
   
-  // Si la page est en mode fallback
+  // If the page is in fallback mode
   if (router.isFallback) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <h2 className="text-xl font-bold">Chargement du parcours...</h2>
+          <h2 className="text-xl font-bold">Loading journey...</h2>
         </div>
       </div>
     );
@@ -72,12 +74,12 @@ const JourneyDetailPage: FC<JourneyDetailPageProps> = ({ journey }) => {
     }
   };
 
-  // Current phase - avec vérification pour éviter les erreurs
-  const currentPhase = journey.phases && journey.phases.length > 0 
-    ? journey.phases[currentPhaseIndex] || journey.phases[0] 
-    : { 
-        name: 'Phase introductive', 
-        content: 'Aucun contenu disponible pour cette phase.',
+  // Current phase - fallback to the first phase if index is invalid
+  const currentPhase = journey.phases && journey.phases.length > 0
+    ? journey.phases[currentPhaseIndex] || journey.phases[0]
+    : {
+        name: 'Introductory Phase',
+        content: 'No content available for this phase.',
         title: 'Introduction',
         icon: '✨'
       };
@@ -253,6 +255,27 @@ const JourneyDetailPage: FC<JourneyDetailPageProps> = ({ journey }) => {
               <ZynoTeaser journeyTitle={journey.metadata.title} />
             </motion.div>
 
+            {/* Proof Stack */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <ProofStack proofs={journey.rewards.map(r => r.proof)} />
+            </motion.div>
+
+            {/* Skillchain Map */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="mt-8"
+            >
+              <SkillchainMap
+                relatedJourneys={journey.related || []}
+              />
+            </motion.div>
+
             {/* Call to Action */}
             <motion.div
               variants={containerVariants}
@@ -295,20 +318,20 @@ const JourneyDetailPage: FC<JourneyDetailPageProps> = ({ journey }) => {
 
 export default JourneyDetailPage;
 
-// Cette fonction génère toutes les routes possibles au moment de la construction (build)
+// This function generates all possible routes at build time
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
-    // Récupérer tous les parcours
+    // Retrieve all journeys
     const journeys = await getAllJourneys();
-    
-    // Générer les chemins pour chaque parcours
+
+    // Generate paths for each journey
     const paths = journeys.map((journey) => ({
       params: { slug: journey.metadata.slug },
     }));
     
     return {
       paths,
-      // fallback: true permet de générer de nouvelles pages à la demande
+      // fallback: true allows new pages to be generated on demand
       fallback: true,
     };
   } catch (error) {
@@ -320,7 +343,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 };
 
-// Cette fonction récupère les données pour chaque page au moment de la construction (build)
+// This function fetches the data for each page at build time
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
     if (!params?.slug) {

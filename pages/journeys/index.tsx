@@ -243,7 +243,7 @@ const JourneysPage: FC<JourneysPageProps> = ({ journeyData }) => {
 
 export default JourneysPage;
 
-// Cette fonction est exécutée côté serveur au moment de la construction (build)
+// This function runs on the server at build time
 export const getStaticProps: GetStaticProps = async () => {
   try {
     const journeyData = await getAllJourneys();

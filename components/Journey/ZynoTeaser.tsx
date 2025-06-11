@@ -45,6 +45,8 @@ const ZynoTeaser: FC<ZynoTeaserProps> = ({ journeyName, journeyTitle }) => {
           <h3 className="text-xl font-bold mb-2">Meet Zyno™ - Your AI Companion</h3>
           <p className="text-gray-300 mb-3">
             Zyno™ can help you navigate {displayName}, provide personalized guidance, and unlock deeper insights.
+            <br />
+            <span className="italic text-sm">Zyno will soon analyze your AEPO profile and recommend a tailored journey.</span>
           </p>
           {journeyName && ` The ${journeyName} awaits your unique contribution.`} Are you ready?
           <div className="flex flex-wrap gap-3 justify-center md:justify-start">

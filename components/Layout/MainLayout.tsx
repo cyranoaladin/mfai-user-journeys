@@ -57,8 +57,14 @@ const MainLayout: FC<MainLayoutProps> = ({
               
               {/* User Actions */}
               <div className="flex items-center gap-4">
+                <button
+                  className="hidden md:inline-block px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-full text-sm"
+                  onClick={() => alert('Zyno simulator coming soon!')}
+                >
+                  Simulate with Zyno
+                </button>
                 {/* XP Badge */}
-                <motion.div 
+                <motion.div
                   className="hidden md:flex items-center gap-2 bg-gray-700 px-3 py-1 rounded-full"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
