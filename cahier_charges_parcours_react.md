@@ -1,3 +1,4 @@
+**Note:** This document is currently only available in French. An English summary is provided in technical_spec_react_en.md.
 Parfait, j’ai lu entièrement le fichier `cahier_charges.md`. Pour répondre à ta demande, je vais maintenant le transformer en une **documentation technique extrêmement détaillée à destination du développeur**, sous forme de guide React mod
 ### ✅ Partie 1/6 – Introduction & Project Scope
 

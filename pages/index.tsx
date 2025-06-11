@@ -62,11 +62,18 @@ const HomePage: FC = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <button 
+                <button
                   onClick={() => router.push('/journeys')}
                   className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-medium transition-colors"
                 >
                   Explore Journeys
+                </button>
+
+                <button
+                  onClick={() => alert('Zyno will soon recommend a journey for you!')}
+                  className="bg-purple-600 hover:bg-purple-500 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  Ask Zyno
                 </button>
                 
                 {!walletConnected && (
@@ -131,6 +138,31 @@ const HomePage: FC = () => {
               </div>
             </motion.div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 bg-gray-800/50">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-8">
+            <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              How it Works
+            </span>
+          </h2>
+          <div className="max-w-3xl mx-auto space-y-6 text-gray-300">
+            <div>
+              <h3 className="font-semibold">How will these journeys be activated?</h3>
+              <p className="text-sm">Journeys are deployed progressively. You can explore the prototype now and your progress will carry over once the protocol goes live.</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">What is a Proof™?</h3>
+              <p className="text-sm">A Proof™ is a verifiable credential minted on-chain to certify your achievements.</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">When can I launch my project?</h3>
+              <p className="text-sm">As soon as your activation phases are complete and your Proof Stack is validated, you'll unlock project launch tools.</p>
+            </div>
+          </div>
         </div>
       </section>
       

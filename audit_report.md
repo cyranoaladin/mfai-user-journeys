@@ -1,3 +1,4 @@
+**Note:** This document is currently only available in French. An English translation is provided in audit_report_en.md.
 # Rapport d'Audit Technique : Money Factory AI User Journeys
 
 **Date de l'audit :** 10 juin 2025  
