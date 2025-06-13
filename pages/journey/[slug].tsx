@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import PhaseSection from '@/components/Journey/Phases/PhaseSection';
 import ZynoSimulator from '@/components/Journey/Zyno/ZynoSimulator';
 import MainLayout from '@/components/Layout/MainLayout';
-import WalletConnect from '@/components/WalletConnect';
+import WalletConnect from '@/components/Wallet/WalletConnect';
 
 // New modular components
 import FinalRoleSection from '@/components/Journey/FinalRoleSection';
