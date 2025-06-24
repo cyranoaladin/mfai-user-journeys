@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { motion } from 'framer-motion';
 
 export interface FilterOption {
@@ -24,7 +24,7 @@ const JourneyFilters: FC<JourneyFiltersProps> = ({
   selectedMissionType,
   onProfileTypeChange,
   onMissionTypeChange,
-  onClearFilters
+  onClearFilters,
 }) => {
   // Animation variants
   const containerVariants = {
@@ -34,18 +34,18 @@ const JourneyFilters: FC<JourneyFiltersProps> = ({
       y: 0,
       transition: {
         duration: 0.5,
-        staggerChildren: 0.05
-      }
-    }
+        staggerChildren: 0.05,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, scale: 0.9 },
-    visible: { opacity: 1, scale: 1 }
+    visible: { opacity: 1, scale: 1 },
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="journey-filters bg-gray-800/70 backdrop-blur-md p-4 rounded-xl mb-8 sticky top-0 z-10 border border-gray-700/50"
       variants={containerVariants}
       initial="hidden"
@@ -59,8 +59,19 @@ const JourneyFilters: FC<JourneyFiltersProps> = ({
             className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
           >
             <span>Clear all filters</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-3 w-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -81,8 +92,8 @@ const JourneyFilters: FC<JourneyFiltersProps> = ({
             >
               All Profiles
             </motion.button>
-            
-            {profileTypes.map((type) => (
+
+            {profileTypes.map(type => (
               <motion.button
                 key={type.id}
                 variants={itemVariants}
@@ -108,25 +119,26 @@ const JourneyFilters: FC<JourneyFiltersProps> = ({
               variants={itemVariants}
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                 selectedMissionType === null
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-purple-600 text-white'
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
               onClick={() => onMissionTypeChange(null)}
             >
               All Missions
             </motion.button>
-            
-            {missionTypes.map((type) => (
+
+            {missionTypes.map(type => (
               <motion.button
                 key={type.id}
                 variants={itemVariants}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors flex items-center gap-1 ${
                   selectedMissionType === type.id
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-purple-600 text-white'
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                 }`}
                 onClick={() => onMissionTypeChange(type.id)}
               >
+                {type.icon && <span>{type.icon}</span>}
                 {type.label}
               </motion.button>
             ))}

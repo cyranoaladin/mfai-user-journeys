@@ -1,37 +1,37 @@
-# Fichiers à supprimer ou fusionner
+# Files to remove or merge
 
-Ce document liste les fichiers qui peuvent être supprimés ou fusionnés pour nettoyer la structure du projet.
+This document lists the files that can be removed or merged to clean up the project structure.
 
-## Fichiers dupliqués
+## Duplicate Files
 
-| Fichier à supprimer | Remplacé par | Justification |
-|---------------------|--------------|---------------|
-| `/components/Journey/VerticalTimeline.tsx` | `/components/Journey/Timeline/VerticalTimeline.tsx` | Version plus récente et mieux typée dans le dossier Timeline |
-| `/components/Journey/JourneyCard.tsx` | `/components/Journey/EnhancedJourneyCard.tsx` | EnhancedJourneyCard est plus complet avec plus de fonctionnalités |
-| `/components/Journey/ZynoBox.tsx` | `/components/Journey/Zyno/ZynoActions.tsx` | Fonctionnalités similaires, ZynoActions est plus complet |
-| `/components/Journey/ZynoTeaser.tsx` | `/components/Journey/Zyno/ZynoSimulator.tsx` | Fonctionnalités similaires, à consolider dans le dossier Zyno |
-| `/components/Journey/NFTBadge.tsx` | `/components/Journey/Rewards/RewardBadge.tsx` | Renommé pour plus de clarté et déplacé dans le dossier Rewards |
-| `/components/Journey/ProofBadge.tsx` | `/components/Journey/Rewards/RewardBadge.tsx` | Fonctionnalités similaires, à consolider |
+| File to remove                             | Replaced by                                         | Justification                                                |
+| ------------------------------------------ | --------------------------------------------------- | ------------------------------------------------------------ |
+| `/components/Journey/VerticalTimeline.tsx` | `/components/Journey/Timeline/VerticalTimeline.tsx` | Newer version with better typing in the Timeline folder      |
+| `/components/Journey/JourneyCard.tsx`      | `/components/Journey/EnhancedJourneyCard.tsx`       | EnhancedJourneyCard is more complete with more features      |
+| `/components/Journey/ZynoBox.tsx`          | `/components/Journey/Zyno/ZynoActions.tsx`          | Similar functionality, ZynoActions is more complete          |
+| `/components/Journey/ZynoTeaser.tsx`       | `/components/Journey/Zyno/ZynoSimulator.tsx`        | Similar functionality, to be consolidated in the Zyno folder |
+| `/components/Journey/NFTBadge.tsx`         | `/components/Journey/Rewards/RewardBadge.tsx`       | Renamed for clarity and moved to the Rewards folder          |
+| `/components/Journey/ProofBadge.tsx`       | `/components/Journey/Rewards/RewardBadge.tsx`       | Similar functionality, to be consolidated                    |
 
-## Fichiers à déplacer
+## Files to move
 
-| Fichier à déplacer | Nouvelle destination | Justification |
-|-------------------|---------------------|---------------|
-| `/components/Journey/PhaseNavigator.tsx` | `/components/Journey/Phases/PhaseNavigator.tsx` | Regroupement logique des composants de phases |
-| `/components/Journey/PhaseSection.tsx` | `/components/Journey/Phases/PhaseSection.tsx` | Regroupement logique des composants de phases |
-| `/components/Journey/JourneyIntro.tsx` | `/components/Journey/Intro/JourneyIntro.tsx` | Organisation par domaine fonctionnel |
+| File to move                             | New destination                                 | Justification                        |
+| ---------------------------------------- | ----------------------------------------------- | ------------------------------------ |
+| `/components/Journey/PhaseNavigator.tsx` | `/components/Journey/Phases/PhaseNavigator.tsx` | Logical grouping of phase components |
+| `/components/Journey/PhaseSection.tsx`   | `/components/Journey/Phases/PhaseSection.tsx`   | Logical grouping of phase components |
+| `/components/Journey/JourneyIntro.tsx`   | `/components/Journey/Intro/JourneyIntro.tsx`    | Organization by functional domain    |
 
-## Dossiers à consolider
+## Folders to consolidate
 
-| Dossier actuel | Action | Justification |
-|----------------|--------|---------------|
-| `/components/Journey/PhaseSystem/` | Fusionner dans `/components/Journey/Phases/` | Organisation par domaine fonctionnel |
-| `/components/Journey/PhaseFeedback/` | Fusionner dans `/components/Journey/Phases/` | Organisation par domaine fonctionnel |
-| `/components/Journey/ProofSection/` | Fusionner dans `/components/Journey/Rewards/` | Organisation par domaine fonctionnel |
-| `/components/Journey/ZynoActions/` | Fusionner dans `/components/Journey/Zyno/` | Organisation par domaine fonctionnel |
+| Current folder                       | Action                                    | Justification                     |
+| ------------------------------------ | ----------------------------------------- | --------------------------------- |
+| `/components/Journey/PhaseSystem/`   | Merge into `/components/Journey/Phases/`  | Organization by functional domain |
+| `/components/Journey/PhaseFeedback/` | Merge into `/components/Journey/Phases/`  | Organization by functional domain |
+| `/components/Journey/ProofSection/`  | Merge into `/components/Journey/Rewards/` | Organization by functional domain |
+| `/components/Journey/ZynoActions/`   | Merge into `/components/Journey/Zyno/`    | Organization by functional domain |
 
-## Remarques importantes
+## Important Notes
 
-- Avant de supprimer un fichier, assurez-vous qu'il n'est pas référencé ailleurs dans le code
-- Mettez à jour les imports dans les fichiers qui utilisent ces composants
-- Testez l'application après chaque série de modifications
+- Before removing a file, make sure it is not referenced elsewhere in the code
+- Update imports in files that use these components
+- Test the application after each series of modifications

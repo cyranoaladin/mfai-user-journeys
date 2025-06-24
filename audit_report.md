@@ -2,7 +2,7 @@
 
 **Date de l'audit :** 10 juin 2025  
 **Version du projet :** 0.1.0  
-**Auditeur :** Expert Technique  
+**Auditeur :** Expert Technique
 
 ## Table des matières
 
@@ -26,6 +26,7 @@ Le projet "Money Factory AI User Journeys" est une application web développée 
 L'architecture technique repose sur un framework moderne (Next.js), utilise TypeScript pour le typage statique, et implémente une gestion d'état efficace via Zustand. L'application adopte une approche de génération statique pour les pages de parcours, avec une régénération incrémentielle pour maintenir le contenu à jour.
 
 Points forts identifiés :
+
 - Architecture modulaire et bien structurée
 - Utilisation efficace des technologies modernes du web
 - Interface utilisateur soignée avec animations fluides
@@ -33,6 +34,7 @@ Points forts identifiés :
 - Intégration de fonctionnalités blockchain (portefeuilles Ethereum et Solana)
 
 Points d'amélioration :
+
 - Documentation limitée du projet
 - Quelques incohérences dans la gestion des routes
 - Tests automatisés absents
@@ -78,6 +80,7 @@ L'application vise à guider les utilisateurs à travers ces parcours, en prése
 L'application utilise l'architecture standard de Next.js avec le routage basé sur les fichiers. Elle implémente principalement le modèle de pages (Pages Router) plutôt que le nouveau App Router de Next.js.
 
 Le projet suit une architecture JAMstack (JavaScript, APIs, Markup) où :
+
 - Le contenu est stocké sous forme de fichiers Markdown
 - Le rendu est principalement statique avec génération au moment de la construction
 - L'interactivité est gérée côté client via React et Zustand
@@ -150,10 +153,10 @@ Carte interactive présentant un parcours avec animations au survol. Utilise Fra
 // Extrait simplifié
 const EnhancedJourneyCard: FC<EnhancedJourneyCardProps> = ({ title, subtitle, tagline, ... }) => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   // Animations avec Framer Motion
   const cardVariants = { ... };
-  
+
   return (
     <motion.div
       variants={cardVariants}
@@ -216,10 +219,10 @@ Affiche le contenu détaillé d'un parcours spécifique avec navigation entre le
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
     const journeys = await getAllJourneys();
-    const paths = journeys.map((journey) => ({
+    const paths = journeys.map(journey => ({
       params: { slug: journey.metadata.slug },
     }));
-    
+
     return {
       paths,
       fallback: true, // Génération à la demande pour les nouveaux parcours
@@ -249,15 +252,15 @@ Le fichier `markdownParser.ts` est responsable de l'extraction et du traitement 
 export async function parseJourneyMarkdown(filePath: string): Promise<JourneyContent> {
   // Lecture du fichier
   const fileContents = fs.readFileSync(filePath, 'utf8');
-  
+
   // Extraction des métadonnées et du contenu
   const { content } = matter(fileContents);
-  
+
   // Extraction des sections avec regex
   const titleMatch = content.match(/## (.*?)\n/);
   const subtitleMatch = content.match(/\*\*\*From (.*?)\*\*\*/);
   // ...
-  
+
   return {
     metadata: { ... },
     phases: [ ... ],
@@ -289,6 +292,7 @@ L'application utilise TailwindCSS comme framework CSS avec une palette de couleu
 ### Composants UI
 
 L'interface utilise des composants modernes avec des effets visuels soignés :
+
 - Cartes avec effets de survol et d'ombre
 - Badges et étiquettes pour les catégories
 - Barres de progression pour le suivi des phases
@@ -298,6 +302,7 @@ L'interface utilise des composants modernes avec des effets visuels soignés :
 ### Animations et transitions
 
 Framer Motion est utilisé pour créer des animations fluides et des micro-interactions :
+
 - Animations d'entrée des éléments (staggered animations)
 - Transitions entre les phases d'un parcours
 - Effets de survol sur les cartes
@@ -309,8 +314,8 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
+    transition: { staggerChildren: 0.1 },
+  },
 };
 
 const itemVariants = {
@@ -318,14 +323,15 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5 }
-  }
+    transition: { duration: 0.5 },
+  },
 };
 ```
 
 ### Responsive design
 
 L'interface s'adapte aux différentes tailles d'écran grâce aux classes responsives de TailwindCSS :
+
 - Mobile-first avec des ajustements pour les écrans plus grands
 - Grille flexible pour l'affichage des cartes de parcours
 - Adaptation des tailles de texte et des espacements
@@ -336,6 +342,7 @@ L'interface s'adapte aux différentes tailles d'écran grâce aux classes respon
 ### Stratégies de rendu
 
 L'application utilise plusieurs stratégies pour optimiser les performances :
+
 - Génération statique des pages pour un chargement rapide
 - Régénération incrémentielle pour maintenir le contenu à jour sans sacrifier les performances
 - Chargement différé des composants non critiques
@@ -343,6 +350,7 @@ L'application utilise plusieurs stratégies pour optimiser les performances :
 ### Optimisations potentielles
 
 Plusieurs optimisations pourraient être implémentées :
+
 - Utilisation de `next/image` pour l'optimisation automatique des images
 - Implémentation du code splitting pour réduire la taille des bundles
 - Mise en cache plus agressive des données statiques
@@ -353,6 +361,7 @@ Plusieurs optimisations pourraient être implémentées :
 ### Authentification et autorisation
 
 L'application intègre des connecteurs de portefeuilles blockchain pour l'authentification :
+
 - Support des portefeuilles Ethereum via Rainbow Kit
 - Support des portefeuilles Solana via Solana Wallet Adapter
 - Stockage sécurisé de l'état d'authentification dans le localStorage
@@ -360,6 +369,7 @@ L'application intègre des connecteurs de portefeuilles blockchain pour l'authen
 ### Risques potentiels
 
 Quelques risques de sécurité à surveiller :
+
 - Validation insuffisante des données provenant des fichiers Markdown
 - Risques liés au stockage des données utilisateur dans le localStorage
 - Absence de vérification côté serveur pour les actions utilisateur
@@ -369,6 +379,7 @@ Quelques risques de sécurité à surveiller :
 ### Intégrations blockchain
 
 L'application s'intègre avec plusieurs technologies blockchain :
+
 - Ethereum via wagmi et Rainbow Kit
 - Solana via Solana Wallet Adapter
 - ThirdWeb pour des fonctionnalités NFT supplémentaires

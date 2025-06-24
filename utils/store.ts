@@ -1,30 +1,29 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Journey, getJourneyByPersona } from './journeyData';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface UserState {
   // User profile
   walletConnected: boolean;
   walletAddress: string | null;
   walletType: 'ethereum' | 'solana' | null;
-  
+
   // Journey progress
   selectedPersona: string | null;
   currentPhase: number;
   totalXP: number;
   mfaiBalance: number;
   completedMissions: string[];
-  
+
   // NFT ownership
   ownedNFTs: string[];
-  
+
   // Zyno AI interaction history
   zynoHistory: {
     prompt: string;
     response: string;
     timestamp: number;
   }[];
-  
+
   // Actions
   connectWallet: (address: string, type: 'ethereum' | 'solana') => void;
   disconnectWallet: () => void;
@@ -38,9 +37,32 @@ interface UserState {
   resetJourney: () => void;
 }
 
+const storage = createJSONStorage<UserState>(() => {
+  if (typeof window === 'undefined') {
+    return {
+      getItem: () => null,
+      setItem: () => {},
+      removeItem: () => {},
+    };
+  }
+  return {
+    getItem: (name: string) => {
+      const str = localStorage.getItem(name);
+      if (!str) return null;
+      return JSON.parse(str);
+    },
+    setItem: (name: string, value: unknown) => {
+      localStorage.setItem(name, JSON.stringify(value));
+    },
+    removeItem: (name: string) => {
+      localStorage.removeItem(name);
+    },
+  };
+});
+
 /**
  * Global state store using Zustand
- * 
+ *
  * Features:
  * - Persistent storage via localStorage
  * - Wallet connection state
@@ -50,7 +72,7 @@ interface UserState {
  */
 export const useStore = create(
   persist<UserState>(
-    (set, get) => ({
+    set => ({
       // Initial state
       walletConnected: false,
       walletAddress: null,
@@ -62,84 +84,76 @@ export const useStore = create(
       completedMissions: [],
       ownedNFTs: [],
       zynoHistory: [],
-      
+
       // Actions
-      connectWallet: (address, type) => set({
-        walletConnected: true,
-        walletAddress: address,
-        walletType: type
-      }),
-      
-      disconnectWallet: () => set({
-        walletConnected: false,
-        walletAddress: null,
-        walletType: null
-      }),
-      
-      selectPersona: (persona) => set({
-        selectedPersona: persona,
-        currentPhase: 0 // Reset to first phase when changing persona
-      }),
-      
-      setCurrentPhase: (phase) => set({
-        currentPhase: phase
-      }),
-      
-      addXP: (amount) => set((state) => ({
-        totalXP: state.totalXP + amount
-      })),
-      
-      addMfai: (amount) => set((state) => ({
-        mfaiBalance: state.mfaiBalance + amount
-      })),
-      
-      completeMission: (missionId) => set((state) => ({
-        completedMissions: [...state.completedMissions, missionId]
-      })),
-      
-      addNFT: (nftId) => set((state) => ({
-        ownedNFTs: [...state.ownedNFTs, nftId]
-      })),
-      
-      addZynoInteraction: (prompt, response) => set((state) => ({
-        zynoHistory: [
-          ...state.zynoHistory,
-          {
-            prompt,
-            response,
-            timestamp: Date.now()
-          }
-        ]
-      })),
-      
-      resetJourney: () => set({
-        currentPhase: 0,
-        totalXP: 0,
-        mfaiBalance: 0,
-        completedMissions: []
-      })  // Note: We don't reset XP or NFTs as those are permanent
+      connectWallet: (address, type) =>
+        set({
+          walletConnected: true,
+          walletAddress: address,
+          walletType: type,
+        }),
+
+      disconnectWallet: () =>
+        set({
+          walletConnected: false,
+          walletAddress: null,
+          walletType: null,
+        }),
+
+      selectPersona: persona =>
+        set({
+          selectedPersona: persona,
+          currentPhase: 0, // Reset to first phase when changing persona
+        }),
+
+      setCurrentPhase: phase =>
+        set({
+          currentPhase: phase,
+        }),
+
+      addXP: amount =>
+        set(state => ({
+          totalXP: state.totalXP + amount,
+        })),
+
+      addMfai: amount =>
+        set(state => ({
+          mfaiBalance: state.mfaiBalance + amount,
+        })),
+
+      completeMission: missionId =>
+        set(state => ({
+          completedMissions: [...state.completedMissions, missionId],
+        })),
+
+      addNFT: nftId =>
+        set(state => ({
+          ownedNFTs: [...state.ownedNFTs, nftId],
+        })),
+
+      addZynoInteraction: (prompt, response) =>
+        set(state => ({
+          zynoHistory: [
+            ...state.zynoHistory,
+            {
+              prompt,
+              response,
+              timestamp: Date.now(),
+            },
+          ],
+        })),
+
+      resetJourney: () =>
+        set({
+          currentPhase: 0,
+          totalXP: 0,
+          mfaiBalance: 0,
+          completedMissions: [],
+        }), // Note: We don't reset XP or NFTs as those are permanent
     }),
     {
       name: 'mfai-user-journey-storage',
-      // Utiliser createJSONStorage pour éviter les erreurs TypeScript
-      storage: {
-        getItem: (name) => {
-          if (typeof window === 'undefined') return null;
-          const str = localStorage.getItem(name);
-          if (!str) return null;
-          return JSON.parse(str);
-        },
-        setItem: (name, value) => {
-          if (typeof window !== 'undefined') {
-            localStorage.setItem(name, JSON.stringify(value));
-          }
-        },
-        removeItem: (name) => {
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem(name);
-          }
-        }
-      }
+      storage,
     }
   )
 );
@@ -148,31 +162,27 @@ export const useStore = create(
  * Selector hooks for common state access patterns
  */
 
-// Get current journey data based on selected persona
-export const useCurrentJourney = () => {
-  const selectedPersona = useStore((state) => state.selectedPersona);
-  return selectedPersona ? getJourneyByPersona(selectedPersona) : null;
-};
+// Note: useCurrentJourney has been moved to a separate hook in hooks/useCurrentJourney.ts
 
 // Check if a specific mission is completed
 export const useMissionStatus = (missionId: string) => {
-  return useStore((state) => state.completedMissions.includes(missionId));
+  return useStore(state => state.completedMissions.includes(missionId));
 };
 
 // Check if user has required NFT for access
 export const useHasRequiredNFT = (nftId: string) => {
-  return useStore((state) => state.ownedNFTs.includes(nftId));
+  return useStore(state => state.ownedNFTs.includes(nftId));
 };
 
 // Get user level based on XP
 export const useUserLevel = () => {
-  const totalXP = useStore((state) => state.totalXP);
+  const totalXP = useStore(state => state.totalXP);
   return Math.floor(totalXP / 100) + 1;
 };
 
 // Calculate next reward threshold
 export const useNextRewardThreshold = () => {
-  const totalXP = useStore((state) => state.totalXP);
+  const totalXP = useStore(state => state.totalXP);
   const currentLevel = Math.floor(totalXP / 100) + 1;
   return currentLevel * 100;
 };

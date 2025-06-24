@@ -18,10 +18,12 @@ const FinalRoleSection: FC<FinalRoleSectionProps> = ({ content }) => {
     >
       <h3 className="text-xl font-semibold mb-4">Your Final Role</h3>
       <div className="prose prose-invert max-w-none">
-        <div 
-          dangerouslySetInnerHTML={{ 
-            __html: content || 'Complete this journey to unlock your potential in the Money Factory ecosystem.' 
-          }} 
+        <div
+          dangerouslySetInnerHTML={{
+            __html:
+              content ||
+              'Complete this journey to unlock your potential in the Money Factory ecosystem.',
+          }}
         />
       </div>
     </motion.div>

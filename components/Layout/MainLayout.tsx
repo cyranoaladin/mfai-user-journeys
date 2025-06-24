@@ -14,19 +14,19 @@ interface MainLayoutProps {
 
 /**
  * MainLayout Component
- * 
+ *
  * Provides consistent layout for all pages with:
  * - Header with navigation and wallet connection
  * - Footer with links and info
  * - SEO metadata
  */
-const MainLayout: FC<MainLayoutProps> = ({ 
-  children, 
+const MainLayout: FC<MainLayoutProps> = ({
+  children,
   title = 'Money Factory AI User Journeys',
-  description = 'Cognitive Activation Journeys™ for Web3 personas'
+  description = 'Cognitive Activation Journeys™ for Web3 personas',
 }) => {
   const { totalXP } = useStore();
-  
+
   return (
     <>
       <Head>
@@ -35,15 +35,15 @@ const MainLayout: FC<MainLayoutProps> = ({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+
       <div className="min-h-screen flex flex-col bg-gray-900 text-white">
         {/* Construction Alert Banner */}
-        <AlertBanner 
+        <AlertBanner
           message="🚧 This platform is under construction. The journeys are examples for future Money Factory AI builders. Launch coming soon."
           dismissible={false}
           type="construction"
         />
-        
+
         {/* Header */}
         <header className="bg-gray-800 border-b border-gray-700">
           <div className="container mx-auto px-4 py-4">
@@ -55,18 +55,24 @@ const MainLayout: FC<MainLayoutProps> = ({
                 </div>
                 <span className="text-sm text-gray-300">User Journeys</span>
               </Link>
-              
+
               {/* Navigation */}
               <nav className="hidden md:flex items-center gap-6">
-                <Link href="/journeys" className="text-gray-300 hover:text-white transition-colors">Journeys</Link>
-                <Link href="/rewards" className="text-gray-300 hover:text-white transition-colors">Rewards</Link>
-                <Link href="/dao" className="text-gray-300 hover:text-white transition-colors">DAO</Link>
+                <Link href="/journeys" className="text-gray-300 hover:text-white transition-colors">
+                  Journeys
+                </Link>
+                <Link href="/rewards" className="text-gray-300 hover:text-white transition-colors">
+                  Rewards
+                </Link>
+                <Link href="/dao" className="text-gray-300 hover:text-white transition-colors">
+                  DAO
+                </Link>
               </nav>
-              
+
               {/* User Actions */}
               <div className="flex items-center gap-4">
                 {/* XP Badge */}
-                <motion.div 
+                <motion.div
                   className="hidden md:flex items-center gap-2 bg-gray-700 px-3 py-1 rounded-full"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -75,19 +81,17 @@ const MainLayout: FC<MainLayoutProps> = ({
                   <span className="text-xs text-blue-300">XP</span>
                   <span className="text-sm font-medium text-white">{totalXP}</span>
                 </motion.div>
-                
+
                 {/* Wallet Connection */}
                 <WalletConnect />
               </div>
             </div>
           </div>
         </header>
-        
+
         {/* Main Content */}
-        <main className="flex-grow">
-          {children}
-        </main>
-        
+        <main className="flex-grow">{children}</main>
+
         {/* Footer */}
         <footer className="bg-gray-800 border-t border-gray-700 py-6">
           <div className="container mx-auto px-4">
@@ -97,12 +101,20 @@ const MainLayout: FC<MainLayoutProps> = ({
                   © {new Date().getFullYear()} Money Factory AI. All rights reserved.
                 </p>
               </div>
-              
+
               <div className="flex gap-6">
-                <a href="#" className="text-gray-400 hover:text-white text-sm">Terms</a>
-                <a href="#" className="text-gray-400 hover:text-white text-sm">Privacy</a>
-                <a href="#" className="text-gray-400 hover:text-white text-sm">Docs</a>
-                <a href="#" className="text-gray-400 hover:text-white text-sm">Support</a>
+                <Link href="/terms" className="text-gray-400 hover:text-white text-sm">
+                  Terms
+                </Link>
+                <Link href="/privacy" className="text-gray-400 hover:text-white text-sm">
+                  Privacy
+                </Link>
+                <Link href="/docs" className="text-gray-400 hover:text-white text-sm">
+                  Docs
+                </Link>
+                <Link href="/support" className="text-gray-400 hover:text-white text-sm">
+                  Support
+                </Link>
               </div>
             </div>
           </div>

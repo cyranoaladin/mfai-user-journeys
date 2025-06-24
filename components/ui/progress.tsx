@@ -1,28 +1,22 @@
-import React from 'react';
+import * as React from 'react';
+import * as ProgressPrimitive from '@radix-ui/react-progress';
+import { cn } from '@/lib/utils';
 
-interface ProgressProps {
-  className?: string;
-  value: number;
-  animated?: boolean;
-}
+const Progress = React.forwardRef<
+  React.ElementRef<typeof ProgressPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
+>(({ className, value, ...props }, ref) => (
+  <ProgressPrimitive.Root
+    ref={ref}
+    className={cn('relative h-2 w-full overflow-hidden rounded-full bg-gray-800', className)}
+    {...props}
+  >
+    <ProgressPrimitive.Indicator
+      className="h-full w-full flex-1 bg-gradient-to-r from-blue-600 to-purple-600 transition-all"
+      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+    />
+  </ProgressPrimitive.Root>
+));
+Progress.displayName = ProgressPrimitive.Root.displayName;
 
-export function Progress({ className, value, animated = false }: ProgressProps) {
-  return (
-    <div className={`h-2 w-full overflow-hidden rounded-full bg-gray-800 ${className || ''}`}>
-      <div 
-        className={`h-full bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-500 ease-out ${animated ? 'relative' : ''}`}
-        style={{ width: `${Math.min(Math.max(value, 0), 100)}%` }}
-      >
-        {animated && (
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute inset-0 opacity-30 bg-gradient-to-r from-transparent via-white to-transparent animate-shimmer" 
-                 style={{ 
-                   backgroundSize: '200% 100%',
-                   animation: 'shimmer 2s infinite linear'
-                 }} />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+export { Progress };

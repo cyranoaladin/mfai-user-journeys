@@ -1,8 +1,39 @@
+---
+title: 'From Community Voice to Synaptic Strategist'
+slug: 'from-community-voice-to-synaptic-strategist'
+phases:
+  - phase: 'Cognitive'
+    title: 'Community Diagnostics'
+    mission: 'Complete the Community Architect Assessment'
+    xpReward: 50
+    nftReward: 'Community Architect Badge'
+  - phase: 'Synaptic'
+    title: 'Network Mapping'
+    mission: 'Map your community network with MFAI tools'
+    xpReward: 75
+    nftReward: 'Network Mapper Badge'
+  - phase: 'Neural'
+    title: 'Collective Intelligence'
+    mission: 'Facilitate a collective intelligence session'
+    xpReward: 100
+    nftReward: 'Collective Intelligence Badge'
+  - phase: 'Activation'
+    title: 'Community Governance'
+    mission: 'Implement a governance structure with MFAI'
+    xpReward: 125
+    nftReward: 'Governance Architect Badge'
+  - phase: 'Amplification'
+    title: 'Synaptic Strategy'
+    mission: 'Launch your community strategy with MFAI tools'
+    xpReward: 150
+    nftReward: 'Synaptic Strategist Badge'
+---
+
 ## 🗣️ The Architect Protocol™
 
-***From Community Voice to Synaptic Strategist™***
+**_From Community Voice to Synaptic Strategist™_**
 
-> *“You don’t follow trends. You generate collective intelligence.”*
+> _“You don’t follow trends. You generate collective intelligence.”_
 
 ---
 
@@ -25,9 +56,9 @@ Money Factory AI turns your ability to sense and align into a **Proof Engine for
 
 Your coordination generates:
 
-* **Proof-of-Alignment™** (validated by Zyno + participants)
-* **Impact Trails™** (measured through mission completions)
-* **Cognitive Leadership Status** (recognized by Synaptic Governance™)
+- **Proof-of-Alignment™** (validated by Zyno + participants)
+- **Impact Trails™** (measured through mission completions)
+- **Cognitive Leadership Status** (recognized by Synaptic Governance™)
 
 You’re not just a moderator.
 You are a **Strategic Node** in the protocol’s brain.
@@ -38,9 +69,9 @@ You are a **Strategic Node** in the protocol’s brain.
 
 ### 🌱 **Phase 0: Collective DNA Activation**
 
-* AEPO™ + Community Mapper tool identify your facilitation and vision skills
-* You receive a **Synaptic Map™** — indicating where your influence has the most leverage
-* Zyno generates your first **Activation Circles™**
+- AEPO™ + Community Mapper tool identify your facilitation and vision skills
+- You receive a **Synaptic Map™** — indicating where your influence has the most leverage
+- Zyno generates your first **Activation Circles™**
 
 🎁 You unlock the Community Architect Dashboard
 
@@ -48,9 +79,9 @@ You are a **Strategic Node** in the protocol’s brain.
 
 ### 🧠 **Phase 1: Align & Facilitate**
 
-* Lead missions, retrospectives or idea-casting rituals
-* Gather Proof-of-Alignment™ validated by your group and Zyno
-* Your role evolves based on **coordination resonance** (the % of impact per mission)
+- Lead missions, retrospectives or idea-casting rituals
+- Gather Proof-of-Alignment™ validated by your group and Zyno
+- Your role evolves based on **coordination resonance** (the % of impact per mission)
 
 🎁 Visibility in Mission Feed + recognition badges
 
@@ -58,9 +89,9 @@ You are a **Strategic Node** in the protocol’s brain.
 
 ### 🔗 **Phase 2: Design Mission Loops**
 
-* Co-create scalable interaction flows (feedback loops, rituals, quests)
-* Zyno simulates engagement metrics and improvement pathways
-* Launch your **Mission Architecture Pack™**
+- Co-create scalable interaction flows (feedback loops, rituals, quests)
+- Zyno simulates engagement metrics and improvement pathways
+- Launch your **Mission Architecture Pack™**
 
 🎁 Get listed as a featured **Strategic Circle Lead™**
 
@@ -68,11 +99,11 @@ You are a **Strategic Node** in the protocol’s brain.
 
 ### 🧬 **Phase 3: Stake, Moderate, Influence**
 
-* Stake \$MFAI via Cognitive Lock™ to unlock:
+- Stake \$MFAI via Cognitive Lock™ to unlock:
 
-  * Ecosystem moderation rights
-  * Synaptic feedback influence
-  * Community protocol optimization votes
+  - Ecosystem moderation rights
+  - Synaptic feedback influence
+  - Community protocol optimization votes
 
 🎁 Earn Neuro-Dividends™ based on community growth you orchestrate
 
@@ -80,9 +111,9 @@ You are a **Strategic Node** in the protocol’s brain.
 
 ### 🚀 **Phase 4: Launch Your Cultural Layer**
 
-* Define your vision into a Movement Template™
-* Recruit co-architects, facilitators, or creatives
-* Launch your **Meta-Community Initiative** under MFAI’s Launchpad
+- Define your vision into a Movement Template™
+- Recruit co-architects, facilitators, or creatives
+- Launch your **Meta-Community Initiative** under MFAI’s Launchpad
 
 🎁 Become a certified Synaptic Strategist™ with long-term protocol royalties
 
@@ -90,8 +121,8 @@ You are a **Strategic Node** in the protocol’s brain.
 
 ## 🧠 What You Earn Along the Way
 
-| Milestone                | Proof Generated              | Utility Unlocked                 |
-| ------------------------ | ---------------------------- | -------------------------------- |
+| Milestone                | Proof Generated               | Utility Unlocked                 |
+| ------------------------ | ----------------------------- | -------------------------------- |
 | Mission facilitated      | **Proof-of-Alignment™**      | Social capital + badges          |
 | Mission impact validated | **Impact Trail Score™**      | Access to curation tools         |
 | Stake & lead             | **Proof-of-Activation™**     | Influence in Synaptic Governance |
@@ -106,14 +137,13 @@ Money Factory AI **delivers it — with proof, rewards, and purpose**.
 
 You’ll go from facilitator to **protocol-native strategist**, helping design the culture of coordination in a decentralized, AI-augmented world.
 
-> *Power is no longer held. It is earned, shared, and proved.*
+> _Power is no longer held. It is earned, shared, and proved._
 
 ---
 
 ### 🔍 Want to step in?
 
 Explore the Architect Protocol™
-📎 *See how alignment becomes capital*
-🧠 *Preview Zyno’s mission-mapping for social flows*
-🚀 *Design the next coordination layer of the cognitive economy*
-
+📎 _See how alignment becomes capital_
+🧠 _Preview Zyno’s mission-mapping for social flows_
+🚀 _Design the next coordination layer of the cognitive economy_

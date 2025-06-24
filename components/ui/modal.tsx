@@ -14,14 +14,14 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 
   useEffect(() => {
     setIsVisible(isOpen);
-    
+
     // Lock body scroll when modal is open
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-    
+
     return () => {
       document.body.style.overflow = 'auto';
     };
@@ -53,16 +53,11 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
           >
             <div className="flex items-center justify-between border-b border-gray-700 p-4">
               <h3 className="text-lg font-semibold text-white">{title}</h3>
-              <button
-                onClick={onClose}
-                className="rounded-full p-1 hover:bg-gray-800"
-              >
+              <button onClick={onClose} className="rounded-full p-1 hover:bg-gray-800">
                 <X className="h-5 w-5 text-gray-400" />
               </button>
             </div>
-            <div className="p-6">
-              {children}
-            </div>
+            <div className="p-6">{children}</div>
           </motion.div>
         </motion.div>
       )}

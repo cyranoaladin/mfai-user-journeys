@@ -1,61 +1,72 @@
-# Money Factory AI - User Journeys
+# Money Factory AI - Parcours d'Apprentissage
 
-Application Next.js pour les parcours utilisateurs de Money Factory AI, permettant aux utilisateurs de suivre des parcours d'apprentissage et d'obtenir des récompenses.
+Une plateforme moderne pour explorer et suivre des parcours d'apprentissage en finance et en intelligence artificielle.
 
-## Structure du projet
+## Fonctionnalités
 
-Le projet suit une architecture modulaire avec une séparation claire des préoccupations :
+- Interface utilisateur moderne et responsive
+- Parcours d'apprentissage personnalisés
+- Système de progression et de récompenses
+- Filtrage et recherche de parcours
+- Animations fluides avec Framer Motion
+- Design system cohérent avec Tailwind CSS
 
+## Technologies Utilisées
+
+- Next.js 14
+- React 18
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- Radix UI
+- ESLint
+- PostCSS
+
+## Installation
+
+1. Clonez le dépôt :
+
+```bash
+git clone https://github.com/cyranoaladin/mfai-user-journeys.git
+cd mfai-user-journeys
 ```
-components/
-├── Journey/
-│   ├── Header/       → Titre, sous-titre, types
-│   ├── Intro/        → Introduction du parcours
-│   ├── Sidebar/      → Profil, rôle, "Why It Matters"
-│   ├── Phases/       → Système de phases, navigation, feedback
-│   ├── Rewards/      → Section de preuve, badges
-│   ├── Zyno/         → Actions Zyno, simulateur
-│   ├── SkillchainMap.tsx
-│   └── XPTracker.tsx
-├── Layout/
-└── UI/              → badge, button, modal, progress, toast
-pages/
-├── index.tsx        → Page d'accueil
-└── journey/
-    └── [slug].tsx   → Page de détail d'un parcours
-journeys/            → Contenu Markdown des parcours
-types/               → Types TypeScript centralisés
-utils/
-├── journeyRegistry.ts → Registre des parcours et relations
-├── markdownParser.ts  → Parser pour le contenu Markdown
-└── types.ts          → Types utilitaires
+
+2. Installez les dépendances :
+
+```bash
+npm install
 ```
 
-## Démarrage
-
-Pour lancer le serveur de développement :
+3. Lancez le serveur de développement :
 
 ```bash
 npm run dev
-# ou
-yarn dev
 ```
 
-Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur pour voir le résultat.
+4. Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
-Vous pouvez commencer à éditer les pages en modifiant les fichiers dans le dossier `pages/`. Les pages se mettent à jour automatiquement lorsque vous modifiez les fichiers.
+## Structure du Projet
 
-## Learn More
+```
+mfai-user-journeys/
+├── components/
+│   ├── Journey/
+│   │   ├── JourneyCard/
+│   │   └── JourneyHeader/
+│   └── ui/
+├── hooks/
+├── pages/
+│   ├── api/
+│   └── index.tsx
+├── styles/
+├── types/
+└── data/
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Contribution
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou à soumettre une pull request.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Licence
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

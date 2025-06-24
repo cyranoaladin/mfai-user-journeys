@@ -1,0 +1,978 @@
+import React, { FC, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/router';
+import { GetStaticProps, GetStaticPaths } from 'next';
+import Head from 'next/head';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+
+// Layout and core components
+import MainLayout from '../../components/Layout/MainLayout';
+import JourneyHeader from '../../components/Journey/JourneyHeader/JourneyHeader';
+import JourneyIntro from '../../components/Journey/Intro/JourneyIntro';
+import PhaseNavigator from '../../components/Journey/Phases/PhaseNavigator';
+import PhaseSection from '../../components/Journey/Phases/PhaseSection';
+import PhaseFeedback from '../../components/Journey/Phases/PhaseFeedback';
+import ProtocolBanner from '../../components/Journey/ProtocolBanner/ProtocolBanner';
+import ProofSection from '../../components/Journey/Rewards/ProofSection';
+import JourneySidebar from '../../components/Journey/JourneySidebar/JourneySidebar';
+import VerticalTimeline from '../../components/Journey/Timeline/VerticalTimeline';
+import WalletConnect from '../../components/WalletConnect';
+import ZynoSimulator from '../../components/Journey/Zyno/ZynoSimulator';
+
+// Import du type Proof pour le typage des preuves débloquées
+import type { Proof } from '../../types/journey';
+
+// Déclaration d'un type local qui utilise Proof pour s'assurer que l'import est utilisé
+type ProofWithStatus = Proof & { isUnlocked: boolean };
+
+// Fonction pour obtenir le nom de phase MFAI à partir de l'index
+const getPhaseNameByIndex = (index: number): "Cognitive" | "Synaptic" | "Neural" | "Activation" | "Amplification" => {
+  const phaseNames: Array<"Cognitive" | "Synaptic" | "Neural" | "Activation" | "Amplification"> = [
+    "Cognitive", "Synaptic", "Neural", "Activation", "Amplification"
+  ];
+  return phaseNames[index] || "Cognitive";
+};
+
+// Hooks personnalisés
+import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation';
+import usePhaseFeedback from '../../hooks/usePhaseFeedback';
+
+// UI components
+import { Button } from '../../components/ui/button';
+import { toast } from '../../components/ui/use-toast';
+
+// Data and utilities
+import { getAllJourneys } from '../../utils/journeyData';
+import { getJourneyBySlug } from '../../utils/markdownParser';
+import { useStore } from '../../utils/store';
+
+// Importer les types centralisés depuis types/journey.ts
+import { JourneyContent, JourneyMetadata } from '../../types/index';
+import { JourneyPhase, PhaseFeedbackData, JourneyDetailPageProps } from '../../types/journey';
+
+// Définir un type Phase qui est compatible avec les deux définitions de JourneyPhase
+type Phase = {
+  name: string;
+  title: string;
+  description: string;
+  mission: string;
+  xpReward: number;
+  nftReward?: string;
+  content?: string;
+  icon?: string;
+};
+
+const JourneyDetailPage: FC<JourneyDetailPageProps> = ({ journey }) => {
+  const router = useRouter();
+  const { currentPhase: storedPhase, setCurrentPhase: setStoredPhase, walletConnected, totalXP, addXP } = useStore();
+  const contentRef = useRef<HTMLDivElement>(null);
+  
+  // Définir une phase par défaut pour éviter les erreurs
+  const defaultPhase: Phase = {
+    name: 'Introduction',
+    title: 'Getting Started',
+    description: 'Welcome to this journey',
+    content: 'This phase introduces you to the journey.',
+    mission: 'Complete the introduction',
+    xpReward: 10,
+    icon: 'book-open'
+  };
+  
+  // Créer des versions sécurisées des données pour éviter les erreurs TypeScript
+  const metadata: JourneyMetadata = journey?.metadata || {
+    title: 'Journey',
+    subtitle: '',
+    tagline: 'Explore this journey',
+    target: '',
+    profileType: '',
+    missionType: '',
+    icon: 'graduation-cap',
+    slug: router.query.slug as string || 'default-journey',
+    description: ''
+  };
+  
+  // Rendre phases réactif avec useMemo et ajouter des phases par défaut si vide
+  const phases = useMemo<Phase[]>(() => {
+    const journeyPhases = journey?.phases || [];
+
+    // Si le tableau est vide, ajouter des phases par défaut du parcours MFAI
+    if (journeyPhases.length === 0) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Notice: Using default phases as journey phases are empty');
+      }
+
+      return [
+        {
+          name: 'Introduction',
+          title: 'Introduction to the Journey',
+          description: 'Learn about this journey and what to expect.',
+          mission: 'Understand the journey objectives',
+          xpReward: 10,
+          content: 'Welcome to this journey. Here you will learn...',
+          icon: 'brain'
+        },
+        {
+          name: 'Fundamentals',
+          title: 'Core Fundamentals',
+          description: 'Master the basic concepts.',
+          mission: 'Learn the core concepts',
+          xpReward: 20,
+          content: 'The fundamental concepts you need to know are...',
+          icon: 'book'
+        },
+        {
+          name: 'Advanced',
+          title: 'Advanced Techniques',
+          description: 'Take your knowledge to the next level.',
+          mission: 'Master advanced techniques',
+          xpReward: 30,
+          content: 'Now that you understand the basics, let\'s explore advanced topics...',
+          icon: 'zap'
+        }
+      ];
+    }
+
+    // Convertir les phases du journey en Phase[] pour assurer la compatibilité
+    return journeyPhases.map(phase => ({
+      name: phase.name || 'Unnamed Phase',
+      title: phase.title,
+      description: phase.description,
+      mission: phase.mission || 'No mission specified',
+      xpReward: phase.xpReward || phase.xp || 0,
+      content: phase.content,
+      icon: phase.icon
+    }));
+  }, [journey?.phases]);
+
+  // Initialiser les états avec des valeurs par défaut sécurisées
+  const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
+  const [currentPhase, setCurrentPhaseState] = useState<Phase>(phases[0] || defaultPhase);
+  // Ref pour suivre si la phase a été initialisée depuis le store
+  const isPhaseInitialized = useRef(false);
+  // État pour stocker les feedbacks soumis par l'utilisateur
+  // Utilisé pour forcer un re-render dans goToNextPhase et goToPrevPhase
+  const [, setFeedbacks] = useState<PhaseFeedbackData[]>([]);
+  const [unlockedProofs, setUnlockedProofs] = useState<number[]>([0]); // Par défaut, la première preuve est débloquée
+  const [showZynoModal, setShowZynoModal] = useState(false);
+  const [progressPercentage, setProgressPercentage] = useState(0);
+  
+  // Fonction pour mettre à jour la phase courante localement uniquement
+  // Le useEffect se chargera de synchroniser avec le store global
+  const setCurrentPhase = (index: number) => {
+    setCurrentPhaseIndex(index);
+    // Mettre à jour l'objet de phase courant si nécessaire
+    if (phases && phases[index]) {
+      setCurrentPhaseState(phases[index]);
+    }
+    // Ne PAS mettre à jour setStoredPhase ici pour éviter la boucle infinie
+  };
+  
+  // Effet pour surveiller les changements de journey (pour débogage en développement uniquement)
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development' && !journey?.phases?.length) {
+      console.log('Notice: Using default phases as journey phases are empty');
+    }
+  }, [journey]);
+  
+  // Utiliser la valeur stockée ou 0, mais s'assurer qu'elle ne dépasse pas le nombre de phases
+  const safePhaseIndex = Math.min(storedPhase || 0, phases.length - 1 >= 0 ? phases.length - 1 : 0);
+
+  // Mettre à jour currentPhaseIndex si nécessaire
+  useEffect(() => {
+    if (currentPhaseIndex !== safePhaseIndex) {
+      setCurrentPhaseIndex(safePhaseIndex);
+    }
+  }, [safePhaseIndex]);
+
+  // Cet effet s'exécute UNIQUEMENT lors de l'initialisation ou quand storedPhase change depuis l'extérieur
+  // (par exemple depuis un autre composant)
+  useEffect(() => {
+    // Initialiser l'état local à partir du store global, mais seulement au premier rendu
+    // ou si storedPhase change depuis l'extérieur (pas à cause de nos propres mises à jour)
+    const isInitialRender = currentPhaseIndex === 0 && !isPhaseInitialized.current;
+    
+    if (isInitialRender) {
+      // Premier rendu, initialiser depuis le store
+      setCurrentPhaseIndex(storedPhase);
+      isPhaseInitialized.current = true;
+    }
+  }, [storedPhase]);
+
+  // Track unlocked proofs (for demo purposes)
+  const handleProofClick = (proofIndex: number) => {
+    if (walletConnected) {
+      if (!unlockedProofs.includes(proofIndex)) {
+        setUnlockedProofs([...unlockedProofs, proofIndex]);
+        addXP(100); // Award 100 XP for unlocking a proof
+        toast({
+          title: "Proof unlocked! +100 XP",
+          variant: "default"
+        });
+      }
+    } else {
+      toast({
+        title: "Connect your wallet to unlock proofs",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Phase feedback system
+  const { saveFeedback, hasFeedbackForPhase } = usePhaseFeedback(metadata.slug || '');
+
+  // Sync local state with global store when currentPhaseIndex changes
+  // Cet effet s'exécute quand currentPhaseIndex change et met à jour le store global
+  useEffect(() => {
+    // Mettre à jour l'objet de phase courant
+    setCurrentPhaseState(phases[currentPhaseIndex] || defaultPhase);
+    
+    // Mettre à jour le store global, mais seulement si nous avons déjà initialisé la phase
+    // pour éviter les mises à jour en boucle
+    if (isPhaseInitialized.current && storedPhase !== currentPhaseIndex) {
+      setStoredPhase(currentPhaseIndex);
+    }
+  }, [currentPhaseIndex, phases, defaultPhase, setStoredPhase, storedPhase]);
+
+  // Progress animation effect
+  useEffect(() => {
+    if (phases.length > 0) {
+      const targetPercentage = (currentPhaseIndex / (phases.length - 1)) * 100;
+
+      // Animate progress bar
+      let start = 0;
+      const animateProgress = () => {
+        start += 1;
+        setProgressPercentage(Math.min(start, targetPercentage));
+        if (start < targetPercentage) {
+          requestAnimationFrame(animateProgress);
+        }
+      };
+
+      requestAnimationFrame(animateProgress);
+    }
+  }, [currentPhaseIndex, phases.length]);
+
+  // Auto-scroll to content when phase changes
+  useEffect(() => {
+    if (contentRef.current) {
+      // Smooth scroll to the content
+      contentRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start'
+      });
+    }
+  }, [currentPhaseIndex]);
+
+  // Animation variants for content
+  const contentVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+    exit: { opacity: 0, y: -10, transition: { duration: 0.3 } }
+  };
+
+  // Fonction pour passer à la phase suivante
+  const goToNextPhase = useCallback(() => {
+    if (currentPhaseIndex < phases.length - 1) {
+      // Calculer le nouvel index
+      const nextPhaseIndex = currentPhaseIndex + 1;
+
+      // Mettre à jour l'index de phase local
+      setCurrentPhase(nextPhaseIndex);
+
+      // Forcer un re-render
+      setFeedbacks([]);
+      
+      // Scroll to content after a short delay to ensure the DOM has updated
+      setTimeout(() => {
+        if (contentRef.current) {
+          contentRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start'
+          });
+        }
+      }, 100);
+
+      if (walletConnected) {
+        addXP(25); // Award 25 XP for advancing
+        toast({
+          title: "Earned 25 XP for advancing to Phase " + (nextPhaseIndex + 1),
+          description: phases[nextPhaseIndex]?.name || 'Next phase',
+          variant: "default"
+        });
+      }
+      
+      console.log('Advanced to phase:', nextPhaseIndex + 1);
+    } else {
+      toast({
+        title: "Vous êtes déjà à la dernière phase",
+        variant: "default"
+      });
+      console.log('Cannot advance: already at last phase');
+    }
+  }, [currentPhaseIndex, phases, setCurrentPhase, contentRef, walletConnected, addXP, toast]);
+
+  const goToPrevPhase = useCallback(() => {
+    if (currentPhaseIndex > 0) {
+      // Calculer le nouvel index
+      const prevPhaseIndex = currentPhaseIndex - 1;
+
+      // Mettre à jour l'index de phase local
+      setCurrentPhase(prevPhaseIndex);
+
+      // Forcer un re-render
+      setFeedbacks([]);
+
+      // Scroll to content after a short delay to ensure the DOM has updated
+      setTimeout(() => {
+        if (contentRef.current) {
+          contentRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start'
+          });
+        }
+      }, 100);
+
+      if (walletConnected) {
+        addXP(10); // Award 10 XP for going back
+        toast({
+          title: "Retour à la phase " + (prevPhaseIndex + 1),
+          description: phases[prevPhaseIndex]?.name || 'Phase précédente',
+          variant: "default"
+        });
+      }
+      
+      console.log('Returned to phase:', prevPhaseIndex + 1);
+    } else {
+      toast({
+        title: "Vous êtes déjà à la première phase",
+        variant: "default"
+      });
+      console.log('Cannot go back: already at first phase');
+    }
+  }, [currentPhaseIndex, phases, setCurrentPhase, contentRef, walletConnected, addXP, toast]);
+
+  // Setup keyboard navigation
+  useKeyboardNavigation({
+    onNext: goToNextPhase,
+    onPrevious: goToPrevPhase,
+    enabled: true
+  });
+
+  // Si la page est en cours de chargement ou si journey est null
+  if (router.isFallback || !journey) {
+    return (
+      <MainLayout>
+        <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+          <div className="text-center">
+            <div className="relative w-24 h-24">
+              <div className="absolute inset-0 rounded-full border-t-4 border-blue-500 animate-spin"></div>
+              <div className="absolute inset-0 rounded-full border-r-4 border-purple-500 animate-pulse opacity-75"></div>
+            </div>
+            <h2 className="mt-6 text-xl font-semibold text-white">Chargement du parcours...</h2>
+            <p className="mt-2 text-blue-300">Préparation de votre expérience d'apprentissage</p>
+          </div>
+        </div>
+      )}
+      </MainLayout>
+    );
+  }
+
+  // Refs pour le scroll automatique
+  const exploreProtocolRef = useRef<HTMLDivElement>(null);
+
+  // Handle explore protocol action - scroll vers la section au lieu de rediriger
+  const handleExploreProtocol = () => {
+    toast({
+      title: "Navigating to Cognitive Activation Protocol",
+      variant: "default"
+    });
+    if (exploreProtocolRef.current) {
+      exploreProtocolRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Handle Zyno modal
+  const handleZynoClick = () => {
+    setShowZynoModal(true);
+  };
+
+  // Handle feedback submission
+  const handleFeedbackSubmit = (data: PhaseFeedbackData) => {
+    // Add phase index to the feedback data
+    const feedbackWithPhase = {
+      ...data,
+      phaseIndex: currentPhaseIndex
+    };
+    saveFeedback(feedbackWithPhase);
+    toast({
+      title: "Feedback submitted. Thank you!",
+      variant: "default"
+    });
+
+    // Add XP for submitting feedback
+    if (walletConnected) {
+      addXP(10);
+      toast({
+        title: "You earned 10 XP for your feedback!",
+        variant: "default"
+      });
+    }
+  };
+
+  // Ce useEffect a été fusionné avec celui au-dessus pour éviter les doublons
+  // et les problèmes de hooks
+
+  // Log de débogage pour suivre les changements de phase
+  useEffect(() => {
+    console.log("Phase changed", currentPhaseIndex, currentPhase);
+  }, [currentPhaseIndex, currentPhase]);
+
+  // État pour gérer l'affichage du chargement initial et l'animation
+  const [isPageLoading, setIsPageLoading] = useState(true);
+  
+  // Effet pour améliorer l'UX avec un chargement progressif
+  useEffect(() => {
+    // Simuler un temps de chargement court pour une meilleure UX
+    const timer = setTimeout(() => {
+      setIsPageLoading(false);
+    }, 800);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  return (
+    <MainLayout>
+      <Head>
+        <title>{`${metadata.title || 'Journey'} | Money Factory AI`}</title>
+        <meta name="description" content={metadata.description || 'Journey details'} />
+      </Head>
+
+      {isPageLoading ? (
+        <div className="container mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[70vh]">
+          <div className="relative w-24 h-24">
+            <div className="absolute inset-0 rounded-full border-t-4 border-blue-500 animate-spin"></div>
+            <div className="absolute inset-0 rounded-full border-r-4 border-purple-500 animate-pulse opacity-75"></div>
+          </div>
+          <h2 className="mt-6 text-xl font-semibold text-white">Chargement du parcours...</h2>
+          <p className="mt-2 text-blue-300">Préparation de votre expérience d'apprentissage</p>
+        </div>
+      ) : (
+        <div className="container mx-auto px-4 py-8">
+        {/* Journey Header */}
+        <div className="mb-8 flex flex-col md:flex-row justify-between items-start gap-6">
+          <JourneyHeader metadata={metadata} />
+          <WalletConnect />
+        </div>
+
+        {/* Journey Intro Component */}
+        <JourneyIntro 
+          journey={{ metadata: metadata }}
+        />
+
+        {/* Main Content Area - Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
+          {/* Left Column - Timeline (Desktop Only) */}
+          <div className="hidden lg:block lg:col-span-1">
+            <VerticalTimeline 
+              phases={phases}
+              currentPhaseIndex={currentPhaseIndex}
+              onPhaseClick={setCurrentPhaseIndex}
+            />
+          </div>
+
+          {/* Middle Column - Main Content */}
+          <div className="lg:col-span-8" ref={contentRef}>
+            {/* Progress Bar */}
+            <div className="mb-6 bg-gray-800/80 backdrop-blur-md rounded-xl p-6 border border-gray-700/50 shadow-lg">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="flex-1 w-full">
+                  <div className="flex justify-between text-sm font-medium mb-2">
+                    <span className="text-white">Progression</span>
+                    <span className="text-blue-300">{Math.round(progressPercentage)}%</span>
+                  </div>
+                  <div className="relative w-full h-3 bg-gray-700/70 rounded-full overflow-hidden">
+                    <div 
+                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-600 to-purple-600"
+                      style={{ width: `${progressPercentage}%` }}
+                    />
+                  </div>
+                  <div className="flex flex-col sm:flex-row justify-between sm:items-center mt-3 gap-2">
+                    <p className="text-sm text-white">
+                      Phase <span className="font-bold text-blue-300">{currentPhaseIndex + 1}</span> sur {phases.length}: <strong className="text-white">{currentPhase.name || ''}</strong>
+                    </p>
+                    {walletConnected && (
+                      <div className="flex items-center gap-2 bg-blue-900/50 px-3 py-1.5 rounded-md border border-blue-700/50">
+                        <span className="text-sm font-semibold text-blue-200">XP: {totalXP}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="hidden md:block">
+                  <PhaseNavigator
+                    currentPhase={currentPhaseIndex}
+                    totalPhases={phases.length}
+                    phaseName={currentPhase.name || ''}
+                    onPrevious={goToPrevPhase}
+                    onNext={goToNextPhase}
+                    aria-label="Navigate between phases"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Navigation Buttons - Only visible on mobile */}
+            <div className="md:hidden mb-6">
+              <div className="flex justify-between gap-2">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className={`flex-1 flex items-center justify-center gap-2 ${currentPhaseIndex === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-700 hover:text-white'}`}
+                  onClick={goToPrevPhase}
+                  disabled={currentPhaseIndex === 0}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-left">
+                    <path d="m15 18-6-6 6-6"/>
+                  </svg>
+                  Précédente
+                </Button>
+                
+                <Button
+                  variant="default"
+                  size="lg"
+                  className={`flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white ${currentPhaseIndex === phases.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={goToNextPhase}
+                  disabled={currentPhaseIndex === phases.length - 1}
+                >
+                  Suivante
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </Button>
+              </div>
+            </div>
+            
+            {/* Phase Content */}
+            <div className="mb-8">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`phase-${currentPhaseIndex}`}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={contentVariants}
+                  className="prose prose-invert max-w-none"
+                >
+                  <PhaseSection 
+                    phase={getPhaseNameByIndex(currentPhaseIndex) as any /* Forcer le type pour éviter l'erreur */}
+                    currentPhase={currentPhaseIndex}
+                    totalPhases={phases.length}
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Phase Feedback System */}
+              {!hasFeedbackForPhase(currentPhaseIndex) && (
+                <div className="flex flex-col space-y-4 mt-8">
+                  <h3 className="text-xl font-semibold">Feedback</h3>
+                  <PhaseFeedback 
+                    phaseId={currentPhaseIndex.toString()}
+                    onFeedbackSubmit={handleFeedbackSubmit}
+                  />
+                </div>
+              )}
+
+              {/* Call to Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                {journey?.callToAction && journey.callToAction.length > 0 && (
+                  <Button 
+                    variant="secondary" 
+                    className="flex-1 py-6 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
+                    onClick={handleExploreProtocol}
+                    aria-label="Explore Cognitive Activation Protocol"
+                  >
+                    <span> Explore Cognitive Activation Protocol</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                )}
+                <Button 
+                  variant="outline" 
+                  className="flex-1 py-6 flex items-center justify-center gap-2 border-blue-500/50 hover:bg-blue-900/20 transition-all duration-300"
+                  onClick={handleZynoClick}
+                  aria-label="Simulate with AI Co-Founder"
+                >
+                  <span> Simulate with AI Co-Founder</span>
+                </Button>
+              </div>
+            </div>
+
+            {/* Proof-of-Skill Tokens */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-8 bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-md rounded-xl p-6 border border-gray-700/50 shadow-lg"
+            >
+              <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+                <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-500">
+                  Proof-of-Skill Tokens
+                </span>
+              </h3>
+              <p className="text-gray-300 text-sm mb-6"> Complete phases to unlock your Neuro-Dividends and Cognitive Lock rewards</p>
+              <ProofSection 
+                proofs={[
+                  // Utilisation explicite du type ProofWithStatus pour éviter l'erreur d'import non utilisé
+                  { id: "1", title: 'Proof 1', description: 'First proof of completion', isUnlocked: unlockedProofs.includes(0) } as ProofWithStatus, 
+                  { id: "2", title: 'Proof 2', description: 'Second proof of completion', isUnlocked: unlockedProofs.includes(1) } as ProofWithStatus
+                ]} 
+                unlockedProofs={unlockedProofs} 
+                onProofClick={handleProofClick} 
+              />
+            </motion.div>
+
+            {/* Phase Navigator (Mobile Only) */}
+            <div className="lg:hidden mt-8">
+              <PhaseNavigator
+                currentPhase={currentPhaseIndex}
+                totalPhases={phases.length}
+                phaseName={currentPhase.name || ''}
+                onPrevious={goToPrevPhase}
+                onNext={goToNextPhase}
+                className="bg-gray-800/50 backdrop-blur-md rounded-xl p-4 border border-gray-700/50"
+              />
+            </div>
+
+            {/* Cognitive Activation Protocol (Skillchain Map) */}
+            <div ref={exploreProtocolRef}>
+              <h2 className="text-2xl font-bold mb-4 text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                Cognitive Activation Protocol
+              </h2>
+              <ProtocolBanner />
+            </div>
+          </div>
+          
+          {/* Right Column - Sidebar */}
+          <div className="lg:col-span-3">
+            {/* Journey Sidebar with metadata, timeline and actions */}
+            <JourneySidebar
+              metadata={metadata}
+              phases={phases}
+              currentPhase={currentPhaseIndex}
+              mfaiBalance="100" 
+              onPhaseClick={(index) => {
+                // Appliquer les changements de phase
+                setCurrentPhase(index); // Cette fonction gère à la fois l'index et l'objet phase
+                if (contentRef.current) {
+                  contentRef.current.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  });
+                }
+              }}
+              onOpenZynoModal={handleZynoClick}
+              onNotifyClick={() => toast({ title: "Cognitive Notifications Enabled", variant: "default" })}
+            />
+
+            {/* Espace réservé pour d'autres widgets ou informations */}
+            {/* <div className="mt-6 bg-gray-800/50 backdrop-blur-md rounded-xl p-4 border border-gray-700/50">
+              <h3 className="text-xl font-semibold mb-4">Widget supplémentaire</h3>
+              <p className="text-sm text-gray-300 mb-4">Contenu supplémentaire à venir</p>
+            </div> */}
+          </div>
+        </div>
+
+        {/* Zyno Modal */}
+        {showZynoModal && (
+          <ZynoSimulator 
+            isOpen={showZynoModal} 
+            onClose={() => setShowZynoModal(false)}
+            journeySlug={metadata.slug || ''}
+          />
+        )}
+      </div>
+      )}
+    </MainLayout>
+  );
+};
+
+  export const getStaticPaths: GetStaticPaths = async () => {
+    try {
+      const journeys = await getAllJourneys();
+
+      // Récupérer les slugs à partir des journeys
+      // Adapter les données retournées par getAllJourneys pour s'assurer qu'elles ont un slug valide
+      const paths = journeys
+        .filter((journey: any) => journey && (journey.metadata?.slug || journey.slug))
+        .map((journey: any) => ({
+          params: { 
+            slug: journey.metadata?.slug || journey.slug || ''
+          },
+        }))
+        .filter(path => path.params.slug); // Filtrer les slugs vides
+
+      console.log(`Generated ${paths.length} static paths for journeys`);
+
+      return {
+        paths,
+        fallback: 'blocking', // Permettre la génération de nouvelles pages à la demande
+      };
+    } catch (error) {
+      console.error("Error generating static paths:", error);
+      return {
+        paths: [],
+        fallback: 'blocking',
+      };
+    }
+  };
+
+  // La fonction getStaticPaths est déjà définie plus haut
+
+  export const getStaticProps: GetStaticProps<JourneyDetailPageProps> = async ({ params }) => {
+  try {
+    // Récupérer le slug depuis les paramètres
+    const slug = params?.slug as string;
+    
+    console.log('getStaticProps - Début de la récupération des données pour le slug:', slug);
+    
+    if (!slug) {
+      console.error("No slug provided");
+      return { notFound: true };
+    }
+    
+    // Récupérer les données du journey
+    let journey: JourneyContent | null = null;
+    
+    // Pour le cas spécifique de defi-fundamentals, récupérer directement depuis le fichier source
+    if (slug === 'defi-fundamentals') {
+      try {
+        console.log('getStaticProps - Cas spécial pour defi-fundamentals, récupération directe');
+        const { journeys } = await import('@/data/journeys');
+        const rawJourney = journeys.find(j => j.metadata.slug === 'defi-fundamentals') || null;
+        
+        if (rawJourney) {
+          console.log('getStaticProps - Parcours defi-fundamentals trouvé directement dans les données statiques');
+          console.log('getStaticProps - Titre:', rawJourney.metadata.title);
+          console.log('getStaticProps - Nombre de phases brutes:', rawJourney.phases.length);
+          
+          // Adapter les phases pour qu'elles soient compatibles avec le type JourneyPhase de @/types/index
+          const adaptedPhases = rawJourney.phases.map(phase => {
+            // Mapper les valeurs personnalisées de protocolPhase vers les valeurs standard
+            let standardProtocolPhase: 'Learn' | 'Build' | 'Prove' | 'Activate' | 'Scale' | undefined = undefined;
+            
+            if (phase.protocolPhase) {
+              if (phase.protocolPhase === 'Cognitive') standardProtocolPhase = 'Learn';
+              else if (phase.protocolPhase === 'Synaptic') standardProtocolPhase = 'Build';
+              else if (phase.protocolPhase === 'Neural') standardProtocolPhase = 'Prove';
+              else if (phase.protocolPhase === 'Activation') standardProtocolPhase = 'Activate';
+              else if (phase.protocolPhase === 'Amplification') standardProtocolPhase = 'Scale';
+              else if (['Learn', 'Build', 'Prove', 'Activate', 'Scale'].includes(phase.protocolPhase as string)) {
+                standardProtocolPhase = phase.protocolPhase as any;
+              }
+            }
+            
+            // Créer une phase compatible avec JourneyPhase de @/types/index
+            return {
+              name: phase.name || '',
+              title: phase.title || '',
+              content: phase.content || '',
+              icon: phase.icon || 'book-open',
+              description: phase.description || '',
+              mission: phase.mission || phase.description || '',
+              xpReward: phase.xpReward || phase.xp || 0,
+              nftReward: phase.nftReward,
+              locked: phase.locked,
+              duration: phase.duration,
+              protocolPhase: standardProtocolPhase
+            };
+          });
+          
+          // Créer un journey compatible avec JourneyContent de @/types/index
+          journey = {
+            metadata: { ...rawJourney.metadata },
+            phases: adaptedPhases,
+            callToAction: rawJourney.callToAction || [],
+            rewards: rawJourney.rewards || [],
+            whyItMatters: rawJourney.whyItMatters || '',
+            finalRole: rawJourney.finalRole || ''
+          };
+          
+          console.log('getStaticProps - Parcours defi-fundamentals adapté avec succès');
+        } else {
+          console.error('getStaticProps - Parcours defi-fundamentals introuvable dans les données statiques');
+        }
+      } catch (directError) {
+        console.error(`Erreur lors de la récupération directe de defi-fundamentals: ${directError}`);
+      }
+    }
+    
+    // Si le parcours n'a pas été trouvé par la méthode directe, essayer la méthode standard
+    if (!journey) {
+      try {
+        console.log('getStaticProps - Appel de getJourneyBySlug avec le slug:', slug);
+        journey = await getJourneyBySlug(slug);
+        console.log(`Journey found for slug: ${slug}`);
+        console.log('getStaticProps - Journey récupéré:', journey ? 'Oui' : 'Non');
+        if (journey) {
+          console.log('getStaticProps - Titre du journey:', journey.metadata.title);
+          console.log('getStaticProps - Nombre de phases:', journey.phases.length);
+        }
+      } catch (fetchError) {
+        console.error(`Error fetching journey data: ${fetchError}`);
+      }
+    }
+    
+    // Si le journey n'existe pas, créer une version par défaut
+    if (!journey) {
+      console.warn(`Journey not found for slug: ${slug}, using fallback data`);
+      
+      // Définir les phases par défaut si aucune n'est fournie
+      const defaultPhases: Phase[] = [
+        {
+          name: 'Introduction',
+          title: 'Introduction to the Journey',
+          description: 'Learn about this journey and what to expect.',
+          mission: 'Understand the journey objectives',
+          xpReward: 10,
+          content: 'Welcome to this journey. Here you will learn...',
+          icon: 'brain'
+        },
+        {
+          name: 'Fundamentals',
+          title: 'Core Fundamentals',
+          description: 'Master the basic concepts.',
+          mission: 'Learn the core concepts',
+          xpReward: 20,
+          content: 'The fundamental concepts you need to know are...',
+          icon: 'book'
+        },
+        {
+          name: 'Advanced',
+          title: 'Advanced Techniques',
+          description: 'Take your knowledge to the next level.',
+          mission: 'Master advanced techniques',
+          xpReward: 30,
+          content: 'Now that you understand the basics, let\'s explore advanced topics...',
+          icon: 'zap'
+        }
+      ];
+      
+      // Créer un journey sécurisé avec des valeurs par défaut
+      const safeJourney: JourneyContent = {
+        metadata: {
+          title: `Journey ${slug}`,
+          subtitle: 'Journey details',
+          tagline: 'Explore this journey',
+          target: 'Beginners',
+          profileType: 'Default',
+          missionType: 'Learning',
+          icon: 'graduation-cap',
+          slug: slug,
+          description: 'This journey is currently being loaded...'
+        },
+        phases: defaultPhases,
+        callToAction: ['Start your journey'],
+        rewards: [{
+          milestone: 'Completion',
+          proof: 'Certificate',
+          utility: 'Knowledge'
+        }],
+        whyItMatters: 'Learning is important',
+        finalRole: 'Knowledgeable user'
+      };
+      
+      return {
+        props: {
+          journey: safeJourney,
+        },
+        // Re-generate at most once per hour
+        revalidate: 3600,
+      };
+    }
+    
+    // Vérifier et normaliser la structure du journey pour éviter les erreurs
+    // Utiliser une approche sécurisée pour accéder aux propriétés
+    const journeyData = journey as any; // Cast temporaire pour éviter les erreurs de type
+    
+    const safeJourney: JourneyContent = {
+      metadata: {
+        title: journeyData?.metadata?.title || `Journey ${slug}`,
+        subtitle: journeyData?.metadata?.subtitle || 'Journey details',
+        tagline: journeyData?.metadata?.tagline || 'Explore this journey',
+        target: journeyData?.metadata?.target || 'Beginners',
+        profileType: journeyData?.metadata?.profileType || 'Default',
+        missionType: journeyData?.metadata?.missionType || 'Learning',
+        icon: journeyData?.metadata?.icon || 'graduation-cap',
+        slug: journeyData?.metadata?.slug || slug,
+        description: journeyData?.metadata?.description || 'Journey description'
+      },
+      phases: Array.isArray(journeyData?.phases) ? journeyData.phases.map((phase: any) => {
+        // Création d'un objet JourneyPhase explicite avec toutes les propriétés requises
+        const safePhase: JourneyPhase = {
+          name: phase.name || 'Unnamed Phase',
+          title: phase.title || 'Untitled',
+          content: phase.content || 'No content available',
+          icon: phase.icon || 'book-open',
+          description: phase.description || 'No description available',
+          mission: phase.mission || 'Complete this phase',
+          xpReward: phase.xpReward || 0,
+        };
+        
+        // Ajout des propriétés optionnelles si elles existent
+        if (phase.nftReward) safePhase.nftReward = phase.nftReward;
+        if (phase.locked !== undefined) safePhase.locked = phase.locked;
+        if (phase.duration) safePhase.duration = phase.duration;
+        
+        return safePhase;
+      }) : [],
+      callToAction: journeyData?.callToAction || ['Start your journey'],
+      rewards: journeyData?.rewards || [{
+        milestone: 'Completion',
+        proof: 'Certificate',
+        utility: 'Knowledge'
+      }],
+      whyItMatters: journeyData?.whyItMatters || 'Learning is important',
+      finalRole: journeyData?.finalRole || 'Knowledgeable user'
+    };
+    
+    return {
+      props: {
+        journey: safeJourney,
+      },
+      // Re-generate at most once per hour
+      revalidate: 3600,
+    };
+    } catch (error) {
+      console.error("Error in getStaticProps:", error);
+      // Retourner des données minimales pour éviter les erreurs de rendu
+      // Récupérer le slug depuis les paramètres même en cas d'erreur
+      const errorSlug = params?.slug as string || 'error';
+      
+      // Créer un journey minimal pour éviter les erreurs
+      const errorJourney: JourneyContent = {
+        metadata: {
+          title: 'Journey Not Found',
+          subtitle: 'Error loading journey',
+          tagline: 'Please try again later',
+          target: 'All users',
+          profileType: 'Default',
+          missionType: 'Error',
+          icon: 'alert-triangle',
+          slug: errorSlug,
+          description: 'There was an error loading this journey'
+        },
+        phases: [],
+        callToAction: [],
+        rewards: [],
+        whyItMatters: '',
+        finalRole: ''
+      };
+      
+      return { 
+        props: { 
+          journey: errorJourney
+        },
+        revalidate: 60 // Réessayer plus rapidement en cas d'erreur
+      };
+    }
+  };
+
+  export default JourneyDetailPage;

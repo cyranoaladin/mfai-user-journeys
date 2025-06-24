@@ -1,1 +1,1 @@
-export { default } from './VerticalTimeline';
+export { default } from './JourneyTimeline';

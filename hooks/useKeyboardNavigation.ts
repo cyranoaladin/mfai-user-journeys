@@ -13,11 +13,11 @@ interface KeyboardNavigationOptions {
 export function useKeyboardNavigation({
   onNext,
   onPrevious,
-  enabled = true
+  enabled = true,
 }: KeyboardNavigationOptions) {
   useEffect(() => {
     if (!enabled) return;
-    
+
     const handleKeyDown = (event: KeyboardEvent) => {
       // Only handle arrow keys
       switch (event.key) {
@@ -31,9 +31,9 @@ export function useKeyboardNavigation({
           return;
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
-    
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };

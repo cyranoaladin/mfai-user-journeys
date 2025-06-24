@@ -18,7 +18,7 @@ export default function PhaseNavigator({
   phaseName,
   onPrevious,
   onNext,
-  className = ''
+  className = '',
 }: PhaseNavigatorProps) {
   return (
     <div className={`flex items-center justify-between ${className}`}>
@@ -33,7 +33,7 @@ export default function PhaseNavigator({
         <span className="hidden sm:inline">Previous</span>
       </Button>
 
-      <motion.div 
+      <motion.div
         key={currentPhase}
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
@@ -42,9 +42,7 @@ export default function PhaseNavigator({
         <span className="text-xs text-gray-400 block sm:inline">
           Phase {currentPhase + 1} of {totalPhases}
         </span>
-        <span className="font-medium text-white text-sm block sm:inline sm:ml-2">
-          {phaseName}
-        </span>
+        <span className="font-medium text-white text-sm block sm:inline sm:ml-2">{phaseName}</span>
       </motion.div>
 
       <Button

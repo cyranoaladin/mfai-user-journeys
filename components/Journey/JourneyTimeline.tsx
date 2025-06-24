@@ -1,115 +1,92 @@
-import { FC, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import PhaseSection from './Phases/PhaseSection';
-
-export interface JourneyPhase {
-  title: string;
-  description: string;
-  mission: string;
-  xpReward: number;
-  nftReward?: string;
-  locked?: boolean;
-}
-
-interface JourneyTimelineProps {
-  currentPhase: number;
-  onPhaseChange: (index: number) => void;
-  journeyData: JourneyPhase[];
-}
+import { FC } from 'react';
+import { motion } from 'framer-motion';
+import { JourneyPhase } from '@/types';
 
 /**
  * JourneyTimeline - Contains the 5 phases of the journey: Learn → Build → Prove → Activate → Scale
- * 
+ *
  * Features:
  * - Phase tabs with icons + progress
  * - Phase title + description + mission
  * - Uses Framer Motion for phase transitions
  * - Locked phase logic (based on wallet/NFT/XP)
  */
-const JourneyTimeline: FC<JourneyTimelineProps> = ({ 
-  currentPhase, 
-  onPhaseChange, 
-  journeyData 
+interface JourneyTimelineProps {
+  currentPhase: number;
+  onPhaseChange: (index: number) => void;
+  journeyData: JourneyPhase[];
+}
+
+const JourneyTimeline: FC<JourneyTimelineProps> = ({
+  currentPhase,
+  onPhaseChange,
+  journeyData,
 }) => {
-  const [selectedPhase, setSelectedPhase] = useState(currentPhase);
-
-  // Phase icons mapping
-  const phaseIcons = [
-    <i key="learn" className="fas fa-graduation-cap" />,
-    <i key="build" className="fas fa-hammer" />,
-    <i key="prove" className="fas fa-certificate" />,
-    <i key="activate" className="fas fa-rocket" />,
-    <i key="scale" className="fas fa-chart-line" />
-  ];
-
-  // Phase names with MFAI terminology
-  const phaseNames = ["Cognitive", "Synaptic", "Neural", "Activation", "Amplification"];
-
-  const handlePhaseClick = (index: number) => {
-    // Pour le prototype, toutes les phases sont accessibles sans restriction
-    setSelectedPhase(index);
-    onPhaseChange(index);
-  };
-
   return (
-    <div className="journey-timeline w-full">
-      {/* Phase Tabs */}
-      <div className="phase-tabs flex justify-between mb-8 relative">
-        {/* Progress Bar */}
-        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-700 -z-10 transform -translate-y-1/2" />
-        <div 
-          className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 -z-10 transform -translate-y-1/2 transition-all duration-500"
-          style={{ width: `${(currentPhase / (journeyData.length - 1)) * 100}%` }}
-        />
-        
-        {journeyData.map((phase, index) => (
-          <motion.button
-            key={index}
-            className={`phase-tab flex flex-col items-center relative z-10 ${
-              selectedPhase === index 
-                ? 'text-blue-500' 
-                : 'text-gray-300 hover:text-white'
-            }`}
-            onClick={() => handlePhaseClick(index)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <div className={`phase-icon w-12 h-12 rounded-full flex items-center justify-center mb-2 ${
-              selectedPhase === index 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-indigo-700 text-white' // Toutes les phases sont actives
-            }`}>
-              {phaseIcons[index]}
-            </div>
-            <span className="text-sm font-medium">{phaseNames[index]}</span>
-          </motion.button>
-        ))}
-      </div>
+    <div className="relative">
+      {/* Timeline Line */}
+      <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-700" />
 
-      {/* Phase Content */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={selectedPhase}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-          className="phase-content"
-        >
-          <PhaseSection
-            phase={phaseNames[selectedPhase] as "Cognitive" | "Synaptic" | "Neural" | "Activation" | "Amplification"}
-            description={journeyData[selectedPhase].description}
-            mission={journeyData[selectedPhase].mission}
-            nftReward={journeyData[selectedPhase].nftReward}
-            xpReward={journeyData[selectedPhase].xpReward}
-            locked={journeyData[selectedPhase].locked}
-            onNextPhase={() => handlePhaseClick(Math.min(selectedPhase + 1, journeyData.length - 1))}
-            onPrevPhase={() => handlePhaseClick(Math.max(selectedPhase - 1, 0))}
-            isFirstPhase={selectedPhase === 0}
-            isLastPhase={selectedPhase === journeyData.length - 1}
-          />
-        </motion.div>
-      </AnimatePresence>
+      {/* Timeline Items */}
+      <div className="space-y-6">
+        {journeyData.map((phase, index) => {
+          const isActive = index === currentPhase;
+          const isCompleted = index < currentPhase;
+          const isLocked = index > currentPhase;
+
+          return (
+            <motion.div
+              key={phase.title}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="relative flex items-start gap-4"
+            >
+              {/* Timeline Dot */}
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center z-10 ${
+                  isActive
+                    ? 'bg-blue-500 ring-4 ring-blue-500/20'
+                    : isCompleted
+                      ? 'bg-green-500'
+                      : isLocked
+                        ? 'bg-gray-600'
+                        : 'bg-gray-700'
+                }`}
+              >
+                {isCompleted ? (
+                  <span className="text-white">✓</span>
+                ) : (
+                  <span className="text-white">{index + 1}</span>
+                )}
+              </div>
+
+              {/* Phase Content */}
+              <div
+                className={`flex-1 cursor-pointer ${isLocked ? 'opacity-50' : ''}`}
+                onClick={() => !isLocked && onPhaseChange(index)}
+              >
+                <h3 className="text-lg font-semibold text-white mb-1">{phase.title}</h3>
+                <p className="text-sm text-gray-400">{phase.description}</p>
+
+                {/* Rewards */}
+                <div className="mt-2 flex items-center gap-2">
+                  {phase.xpReward && phase.xpReward > 0 && (
+                    <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full">
+                      +{phase.xpReward} XP
+                    </span>
+                  )}
+                  {phase.nftReward && (
+                    <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded-full">
+                      {phase.nftReward}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
     </div>
   );
 };

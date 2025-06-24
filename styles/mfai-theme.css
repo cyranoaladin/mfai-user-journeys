@@ -1,0 +1,250 @@
+/* MFAI Theme - Solana Gradient Identity */
+:root {
+  --mfai-violet: #9945ff;
+  --mfai-green: #14f195;
+  --mfai-blue: #00c2ff;
+  --mfai-purple: #7b3fe4;
+
+  /* Gradient Definitions */
+  --solana-gradient: linear-gradient(90deg, var(--mfai-violet) 0%, var(--mfai-green) 100%);
+  --solana-gradient-hover: linear-gradient(90deg, var(--mfai-violet) 10%, var(--mfai-green) 90%);
+  --solana-gradient-active: linear-gradient(90deg, var(--mfai-green) 0%, var(--mfai-violet) 100%);
+
+  /* Phase Colors */
+  --phase-cognitive: var(--mfai-violet);
+  --phase-synaptic: #8a56ff;
+  --phase-neural: #6b68ff;
+  --phase-activation: #4c7aff;
+  --phase-amplification: var(--mfai-green);
+}
+
+/* Solana Gradient Text */
+.text-solana-gradient {
+  background: var(--solana-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Solana Gradient Background */
+.bg-solana-gradient {
+  background: var(--solana-gradient);
+}
+
+.bg-solana-gradient:hover {
+  background: var(--solana-gradient-hover);
+  transition: background 0.3s ease;
+}
+
+/* Verb Animations */
+.verb-animate {
+  position: relative;
+  display: inline-block;
+}
+
+.verb-animate:hover {
+  animation: pulse 1.5s infinite;
+}
+
+.verb-animate::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--solana-gradient);
+  transition: width 0.3s ease;
+}
+
+.verb-animate:hover::after {
+  width: 100%;
+}
+
+/* Circular Navigation */
+.circular-nav {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.circular-nav-item {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.circular-nav-item:hover {
+  transform: scale(1.1);
+}
+
+.circular-nav-item.cognitive {
+  background: var(--phase-cognitive);
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.circular-nav-item.synaptic {
+  background: var(--phase-synaptic);
+  top: 25%;
+  right: 0;
+}
+.circular-nav-item.neural {
+  background: var(--phase-neural);
+  bottom: 25%;
+  right: 0;
+}
+.circular-nav-item.activation {
+  background: var(--phase-activation);
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.circular-nav-item.amplification {
+  background: var(--phase-amplification);
+  bottom: 25%;
+  left: 0;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* XP Bar Animation */
+.xp-bar {
+  height: 8px;
+  background: #2d3748;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.xp-bar-fill {
+  height: 100%;
+  background: var(--solana-gradient);
+  border-radius: 4px;
+  transition: width 1s ease-out;
+}
+
+/* MFAI Gain Flash */
+.mfai-gain {
+  animation: gainFlash 1s ease-out;
+}
+
+@keyframes gainFlash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(20, 241, 149, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(20, 241, 149, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(20, 241, 149, 0);
+  }
+}
+
+/* Cognitive Lock */
+.cognitive-lock {
+  position: relative;
+}
+
+.cognitive-lock::before {
+  content: '🔒';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  opacity: 0.7;
+}
+
+/* Sovereign Pass Enhancement */
+.sovereign-pass {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#1a202c, #1a202c) padding-box,
+    var(--solana-gradient) border-box;
+}
+
+/* Zyno Integration */
+.zyno-container {
+  border-radius: 12px;
+  background: rgba(26, 32, 44, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(153, 69, 255, 0.3);
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+
+.zyno-container:hover {
+  border-color: rgba(153, 69, 255, 0.6);
+  box-shadow: 0 0 15px rgba(153, 69, 255, 0.2);
+}
+
+/* NFT Badge Styles */
+.nft-badge {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #2d3748;
+  transition: transform 0.3s ease;
+}
+
+.nft-badge::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--solana-gradient);
+  z-index: -1;
+  border-radius: 14px;
+}
+
+.nft-badge:hover {
+  transform: translateY(-5px);
+}
+
+.nft-claimed {
+  position: relative;
+}
+
+.nft-claimed::after {
+  content: '✓';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  background: var(--mfai-green);
+  color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}

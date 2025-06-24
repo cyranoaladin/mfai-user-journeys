@@ -3,11 +3,11 @@
 ## Checklist de validation de structure
 
 - [x] Tous les composants utilisés sont dans un dossier dédié
-- [ ] Aucun doublon (`VerticalTimeline`, `ZynoBox`, etc.) - *Liste identifiée dans files_to_remove.md*
+- [ ] Aucun doublon (`VerticalTimeline`, `ZynoBox`, etc.) - _Liste identifiée dans files_to_remove.md_
 - [x] Tous les fichiers .tsx sont typés et connectés
 - [ ] Tous les `*.md` ont un frontmatter cohérent
 - [x] Types centralisés dans `types/journey.ts`
-- [x] Aucun fichier orphelin dans `components/Journey/` - *Réorganisation effectuée*
+- [x] Aucun fichier orphelin dans `components/Journey/` - _Réorganisation effectuée_
 - [x] Parser markdown vérifié et enrichi
 - [x] Registre des parcours créé dans `utils/journeyRegistry.ts`
 - [x] Fichiers index.ts créés pour faciliter les imports
@@ -56,18 +56,18 @@ components/
 
 ## 📌 Fichiers clés à maintenir
 
-| Fichier / dossier                       | Rôle                                                           |
-| --------------------------------------- | -------------------------------------------------------------- |
-| `pages/journey/[slug].tsx`              | Route principale de consultation des parcours                   |
-| `components/Journey/Phases/`            | Logique d'affichage par phase + animations                     |
-| `components/Journey/Rewards/`           | Affichage des récompenses (badge, NFT, preuve)                 |
-| `components/Journey/Zyno/`              | Accès à Zyno AI (à intégrer avec l'API réelle)                 |
-| `components/Journey/SkillchainMap.tsx`  | Connexion logique entre les parcours                           |
-| `journeys/*.md`                         | Contenus source avec frontmatter cohérent                      |
-| `utils/markdownParser.ts`               | Parser + enrichisseur de contenu Markdown                      |
-| `utils/journeyRegistry.ts`              | Registre des parcours et leurs relations                       |
-| `types/journey.ts`                      | Types centralisés pour tout le projet                          |
-| `store.ts`                              | État global Zustand                                            |
+| Fichier / dossier                      | Rôle                                           |
+| -------------------------------------- | ---------------------------------------------- |
+| `pages/journey/[slug].tsx`             | Route principale de consultation des parcours  |
+| `components/Journey/Phases/`           | Logique d'affichage par phase + animations     |
+| `components/Journey/Rewards/`          | Affichage des récompenses (badge, NFT, preuve) |
+| `components/Journey/Zyno/`             | Accès à Zyno AI (à intégrer avec l'API réelle) |
+| `components/Journey/SkillchainMap.tsx` | Connexion logique entre les parcours           |
+| `journeys/*.md`                        | Contenus source avec frontmatter cohérent      |
+| `utils/markdownParser.ts`              | Parser + enrichisseur de contenu Markdown      |
+| `utils/journeyRegistry.ts`             | Registre des parcours et leurs relations       |
+| `types/journey.ts`                     | Types centralisés pour tout le projet          |
+| `store.ts`                             | État global Zustand                            |
 
 ## 🔄 Actions de refactoring effectuées
 

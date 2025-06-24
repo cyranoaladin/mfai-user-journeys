@@ -21,11 +21,7 @@ interface AlertBannerProps {
  * Platform-wide alert banner to display important messages
  * Can be used for construction notices, announcements, etc.
  */
-const AlertBanner: FC<AlertBannerProps> = ({ 
-  message, 
-  dismissible = true,
-  type = 'info' 
-}) => {
+const AlertBanner: FC<AlertBannerProps> = ({ message, dismissible = true, type = 'info' }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   // If banner is dismissed, don't render anything
@@ -71,13 +67,25 @@ const AlertBanner: FC<AlertBannerProps> = ({
         >
           <div className="container mx-auto flex items-center justify-between">
             <div className="flex items-center">
-              {type === 'construction' && <span className="mr-2 text-lg" aria-hidden="true">🚧</span>}
-              {type === 'warning' && <span className="mr-2 text-lg" aria-hidden="true">⚠️</span>}
-              {type === 'info' && <span className="mr-2 text-lg" aria-hidden="true">ℹ️</span>}
+              {type === 'construction' && (
+                <span className="mr-2 text-lg" aria-hidden="true">
+                  🚧
+                </span>
+              )}
+              {type === 'warning' && (
+                <span className="mr-2 text-lg" aria-hidden="true">
+                  ⚠️
+                </span>
+              )}
+              {type === 'info' && (
+                <span className="mr-2 text-lg" aria-hidden="true">
+                  ℹ️
+                </span>
+              )}
               <p className="text-sm md:text-base">{message}</p>
             </div>
             {dismissible && (
-              <button 
+              <button
                 onClick={() => setIsVisible(false)}
                 className="ml-4 opacity-70 hover:opacity-100 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-full"
                 aria-label="Dismiss alert"

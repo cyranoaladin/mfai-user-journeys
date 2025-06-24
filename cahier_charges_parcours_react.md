@@ -1,4 +1,5 @@
 Parfait, j’ai lu entièrement le fichier `cahier_charges.md`. Pour répondre à ta demande, je vais maintenant le transformer en une **documentation technique extrêmement détaillée à destination du développeur**, sous forme de guide React mod
+
 ### ✅ Partie 1/6 – Introduction & Project Scope
 
 ```md
@@ -7,7 +8,7 @@ Parfait, j’ai lu entièrement le fichier `cahier_charges.md`. Pour répondre �
 **Project**: Money Factory AI  
 **Page**: `User Journeys`  
 **Version**: 1.0  
-**Audience**: React Developers (Frontend), UI/UX, Web3 Integrators  
+**Audience**: React Developers (Frontend), UI/UX, Web3 Integrators
 
 ---
 
@@ -31,36 +32,35 @@ Build a **modular, gamified, Web3-native React interface** to onboard diverse us
 
 ## 🧱 Architecture Guidelines
 
-| Element            | Design Choice                       |
-|--------------------|-------------------------------------|
-| Framework          | React (Next.js recommended)         |
-| Styling            | Tailwind CSS + CSS Modules optional |
-| Animation          | Framer Motion                       |
-| State Management   | Zustand or Context API              |
+| Element            | Design Choice                                     |
+| ------------------ | ------------------------------------------------- |
+| Framework          | React (Next.js recommended)                       |
+| Styling            | Tailwind CSS + CSS Modules optional               |
+| Animation          | Framer Motion                                     |
+| State Management   | Zustand or Context API                            |
 | Wallet Integration | `@rainbow-me/rainbowkit`, `solana-wallet-adapter` |
-| NFT Layer          | `Thirdweb`, `Metaplex`, or custom contract calls |
-| AI Assistant       | Zyno SDK (chat + RAG)               |
-| Content Source     | Static JSON (v1), CMS optional      |
+| NFT Layer          | `Thirdweb`, `Metaplex`, or custom contract calls  |
+| AI Assistant       | Zyno SDK (chat + RAG)                             |
+| Content Source     | Static JSON (v1), CMS optional                    |
 
 ---
 
 ## 🧠 Terminology Reference (vital for dev clarity)
 
-| Term                       | Meaning |
-|---------------------------|---------|
-| **Zyno**                  | Cognitive AI Co-Founder™ that guides the user |
-| **Cognitive Activation Protocol™** | 5-phase path structure |
-| **Proof-of-Skill™ NFT**   | On-chain badge for completed learning steps |
-| **Neuro-Dividends™**      | Token rewards tied to progression |
-| **Persona**               | A user archetype (student, investor...) |
-| **XP**                    | Experience points to gamify journey |
-| **NFT Pass**              | Gold / Platinum / Diamond access tiers |
-| **Journey Card**          | Interactive entrypoint to a persona’s path |
+| Term                                | Meaning                                        |
+| ----------------------------------- | ---------------------------------------------- |
+| **Zyno**                            | Cognitive AI Co-Founder™ that guides the user |
+| **Cognitive Activation Protocol™** | 5-phase path structure                         |
+| **Proof-of-Skill™ NFT**            | On-chain badge for completed learning steps    |
+| **Neuro-Dividends™**               | Token rewards tied to progression              |
+| **Persona**                         | A user archetype (student, investor...)        |
+| **XP**                              | Experience points to gamify journey            |
+| **NFT Pass**                        | Gold / Platinum / Diamond access tiers         |
+| **Journey Card**                    | Interactive entrypoint to a persona’s path     |
 
 ---
 
 ## 📁 Folder Structure (Recommended)
-
 ```
 
 /components
@@ -73,12 +73,12 @@ NFTBadge.tsx
 XPTracker.tsx
 /pages
 /journeys
-index.tsx       // Entry page
-\[persona].tsx   // Dynamic route per profile
+index.tsx // Entry page
+\[persona].tsx // Dynamic route per profile
 /utils
-journeyData.ts    // JSON static journey config
-nftUtils.ts       // NFT & wallet helpers
-zynoLogic.ts      // AI prompts & logic bridge
+journeyData.ts // JSON static journey config
+nftUtils.ts // NFT & wallet helpers
+zynoLogic.ts // AI prompts & logic bridge
 
 ````
 
@@ -96,8 +96,6 @@ zynoLogic.ts      // AI prompts & logic bridge
 const { address, connected } = useWallet();
 const hasAccess = checkNFTGate(address, 'Proof-of-Skill™');
 ````
-
-
 
 ## 🧩 Partie 2/6 — React Components Architecture
 
@@ -119,10 +117,10 @@ interface JourneyCardProps {
 
 #### ✅ Features
 
-* Responsive hover animation
-* Progress bar if journey started
-* Dynamic CTA: “Start”, “Resume”, “Restart”
-* Color theme varies by persona (e.g. student = blue, investor = green)
+- Responsive hover animation
+- Progress bar if journey started
+- Dynamic CTA: “Start”, “Resume”, “Restart”
+- Color theme varies by persona (e.g. student = blue, investor = green)
 
 ---
 
@@ -140,10 +138,10 @@ interface JourneyTimelineProps {
 
 #### ✅ Features
 
-* Phase tabs with icons + progress
-* Phase title + description + mission
-* Uses `Framer Motion` for phase transitions
-* Locked phase logic (based on wallet/NFT/XP)
+- Phase tabs with icons + progress
+- Phase title + description + mission
+- Uses `Framer Motion` for phase transitions
+- Locked phase logic (based on wallet/NFT/XP)
 
 ---
 
@@ -153,7 +151,7 @@ interface JourneyTimelineProps {
 
 ```tsx
 interface PhaseSectionProps {
-  phase: "Learn" | "Build" | "Prove" | "Activate" | "Scale";
+  phase: 'Learn' | 'Build' | 'Prove' | 'Activate' | 'Scale';
   description: string;
   mission: string;
   nftReward?: string;
@@ -164,10 +162,10 @@ interface PhaseSectionProps {
 
 #### ✅ Features
 
-* Actionable CTA with conditional states
-* XP bar segment
-* NFT visual if earned
-* Zyno support icon (“Ask Zyno for help”)
+- Actionable CTA with conditional states
+- XP bar segment
+- NFT visual if earned
+- Zyno support icon (“Ask Zyno for help”)
 
 ---
 
@@ -186,10 +184,10 @@ interface NFTBadgeProps {
 
 #### ✅ Features
 
-* Claimed = full color, animation
-* Unclaimed = grayscale with “Unlock” hint
-* Tooltip with NFT metadata
-* Connect to wallet if unclaimed
+- Claimed = full color, animation
+- Unclaimed = grayscale with “Unlock” hint
+- Tooltip with NFT metadata
+- Connect to wallet if unclaimed
 
 ---
 
@@ -206,10 +204,10 @@ interface ZynoBoxProps {
 
 #### ✅ Features
 
-* “Zyno Suggests…” prompt engine
-* Optional voice bubble
-* Icon animée + mini-chat ou tooltip
-* Intégration avec LangChain ou backend RAG
+- “Zyno Suggests…” prompt engine
+- Optional voice bubble
+- Icon animée + mini-chat ou tooltip
+- Intégration avec LangChain ou backend RAG
 
 ---
 
@@ -226,9 +224,9 @@ interface XPTrackerProps {
 
 #### ✅ Features
 
-* XP progress ring
-* Milestone animation when level up
-* Shows bonus for NFT Pass holders
+- XP progress ring
+- Milestone animation when level up
+- Shows bonus for NFT Pass holders
 
 ---
 
@@ -236,11 +234,10 @@ interface XPTrackerProps {
 
 Tous ces composants doivent être :
 
-* **composables** entre eux (ex: `<PhaseSection />` dans `<JourneyTimeline />`)
-* **prop-driven**, pas hardcodés
-* **thématisables** (dark mode, persona colors, etc.)
-* **compatibles wallet** (NFTs, tokens, gated CTAs)
-
+- **composables** entre eux (ex: `<PhaseSection />` dans `<JourneyTimeline />`)
+- **prop-driven**, pas hardcodés
+- **thématisables** (dark mode, persona colors, etc.)
+- **compatibles wallet** (NFTs, tokens, gated CTAs)
 
 ## 📊 Partie 3/6 — Data Logic & Journey Configuration
 
@@ -330,13 +327,14 @@ const useUserState = create<UserState & Actions>((set, get) => ({
 
 ## 🔁 4. Persistant entre sessions
 
-* Utiliser `localStorage` ou `IndexedDB` pour stocker :
+- Utiliser `localStorage` ou `IndexedDB` pour stocker :
 
-  * XP
-  * Phase atteinte
-  * Persona choisie
-  * Récompenses visuelles
-* Optionnel : synchro avec Firebase ou backend
+  - XP
+  - Phase atteinte
+  - Persona choisie
+  - Récompenses visuelles
+
+- Optionnel : synchro avec Firebase ou backend
 
 ---
 
@@ -355,14 +353,11 @@ if (locked && !userState.nfts.includes("Proof-of-Skill™")) {
 
 ## 🧠 6. Recommandation d'optimisation future
 
-* Passage vers CMS type Sanity ou Notion API
-* Configuration stockée sous forme de modèles :
+- Passage vers CMS type Sanity ou Notion API
+- Configuration stockée sous forme de modèles :
 
-  * `personaTemplate.json`
-  * `phaseTemplate.json`
-
-
-
+  - `personaTemplate.json`
+  - `phaseTemplate.json`
 
 ## 🔐 Partie 4/6 — Wallet, NFTs, and Token Gating
 
@@ -372,9 +367,9 @@ if (locked && !userState.nfts.includes("Proof-of-Skill™")) {
 
 Permettre à la page `User Journeys` :
 
-* de détecter les **NFT Passes**, les **Proof-of-Skill NFTs**, et les soldes \$MFAI
-* de verrouiller/déverrouiller dynamiquement les phases ou actions
-* de **connecter, lire, écrire et minter** via les wallets
+- de détecter les **NFT Passes**, les **Proof-of-Skill NFTs**, et les soldes \$MFAI
+- de verrouiller/déverrouiller dynamiquement les phases ou actions
+- de **connecter, lire, écrire et minter** via les wallets
 
 ---
 
@@ -390,13 +385,13 @@ Permettre à la page `User Journeys` :
 ### 🔁 Exemples d’intégration
 
 ```tsx
-import { useAccount } from "wagmi";
+import { useAccount } from 'wagmi';
 
 const { address, isConnected } = useAccount();
 ```
 
 ```tsx
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const { publicKey, connected } = useWallet();
 ```
@@ -407,12 +402,12 @@ const { publicKey, connected } = useWallet();
 
 ### ✅ Recommandé :
 
-* Appel backend API ou Thirdweb/Moralis/Metaplex
-* Filtrer par tag ou nom de la collection (Proof-of-Skill™, Pass, etc.)
+- Appel backend API ou Thirdweb/Moralis/Metaplex
+- Filtrer par tag ou nom de la collection (Proof-of-Skill™, Pass, etc.)
 
 ```ts
 const userNFTs = await getUserNFTs(walletAddress);
-const hasPass = userNFTs.some(nft => nft.name.includes("Gold Pass"));
+const hasPass = userNFTs.some(nft => nft.name.includes('Gold Pass'));
 ```
 
 ---
@@ -420,7 +415,7 @@ const hasPass = userNFTs.some(nft => nft.name.includes("Gold Pass"));
 ## 🪙 3. Vérification du token \$MFAI
 
 ```ts
-const balance = await getTokenBalance(address, "$MFAI");
+const balance = await getTokenBalance(address, '$MFAI');
 const eligible = balance > 100;
 ```
 
@@ -430,15 +425,15 @@ const eligible = balance > 100;
 
 ## 🚪 4. Token Gating Logic (Phase Locks)
 
-| Phase        | Conditions d'accès         |
-| ------------ | -------------------------- |
-| **Build**    | Gold NFT Pass requis       |
+| Phase        | Conditions d'accès          |
+| ------------ | --------------------------- |
+| **Build**    | Gold NFT Pass requis        |
 | **Prove**    | Proof-of-Skill™ NFT requis |
-| **Activate** | \$MFAI stakés OU NFT Pass  |
-| **Scale**    | DAO role / Platinum Pass   |
+| **Activate** | \$MFAI stakés OU NFT Pass   |
+| **Scale**    | DAO role / Platinum Pass    |
 
 ```tsx
-if (!hasPass && phase === "Build") return <LockedOverlay reason="Gold Pass required" />;
+if (!hasPass && phase === 'Build') return <LockedOverlay reason="Gold Pass required" />;
 ```
 
 ---
@@ -448,9 +443,9 @@ if (!hasPass && phase === "Build") return <LockedOverlay reason="Gold Pass requi
 ```ts
 const mintNFT = async () => {
   const metadata = {
-    name: "Proof-of-Skill: Web3 Basics",
-    image: "/nfts/web3_basic.png",
-    attributes: [{ trait_type: "XP", value: 75 }],
+    name: 'Proof-of-Skill: Web3 Basics',
+    image: '/nfts/web3_basic.png',
+    attributes: [{ trait_type: 'XP', value: 75 }],
   };
 
   await thirdweb.mintTo(walletAddress, metadata);
@@ -459,17 +454,15 @@ const mintNFT = async () => {
 
 🎁 Suggestion UI :
 
-* Modal de succès → NFT visible dans `<NFTBadge />`
-* Feedback animé : confetti, Zyno applaudit
+- Modal de succès → NFT visible dans `<NFTBadge />`
+- Feedback animé : confetti, Zyno applaudit
 
 ---
 
 ## 🧾 6. Stockage NFT & XP
 
-* NFTs sur blockchain → appel à chaque connexion
-* XP → persisté localement + résumé on-chain optionnel (NFT badge résumé)
-
-
+- NFTs sur blockchain → appel à chaque connexion
+- XP → persisté localement + résumé on-chain optionnel (NFT badge résumé)
 
 ## ✨ Partie 5/6 — Animation, AI & CTA Intelligence
 
@@ -479,9 +472,9 @@ const mintNFT = async () => {
 
 Créer une interface :
 
-* fluide et agréable visuellement (animations contextuelles)
-* **guidée par l’IA Zyno** selon les profils et comportements
-* avec des **CTA intelligents** qui s’adaptent à la progression utilisateur
+- fluide et agréable visuellement (animations contextuelles)
+- **guidée par l’IA Zyno** selon les profils et comportements
+- avec des **CTA intelligents** qui s’adaptent à la progression utilisateur
 
 ---
 
@@ -513,17 +506,14 @@ Créer une interface :
 
 ### 🧩 Objectifs :
 
-* Fournir des **hints contextuels**
-* Répondre aux questions par phase
-* Donner des **recommandations proactives** (“Zyno suggests…”)
+- Fournir des **hints contextuels**
+- Répondre aux questions par phase
+- Donner des **recommandations proactives** (“Zyno suggests…”)
 
 ### 🔧 Implémentation (simplifiée)
 
 ```tsx
-<ZynoBox
-  context={`phase:${currentPhase}`}
-  onPrompt={(msg) => sendToZynoAI(msg)}
-/>
+<ZynoBox context={`phase:${currentPhase}`} onPrompt={msg => sendToZynoAI(msg)} />
 ```
 
 Backend suggestion : `LangChain` avec vecteurs (OpenAI, Cohere, Zyno RAG)
@@ -548,32 +538,29 @@ Backend suggestion : `LangChain` avec vecteurs (OpenAI, Cohere, Zyno RAG)
 
 ```ts
 const getCTA = () => {
-  if (!walletConnected) return "Connect your wallet";
-  if (!hasNFT) return "Mint Proof-of-Skill™";
-  if (currentPhase === "Learn") return "Start Learning";
-  if (currentPhase === "Prove") return "Take the Quiz";
-  return "Ask Zyno for Guidance";
+  if (!walletConnected) return 'Connect your wallet';
+  if (!hasNFT) return 'Mint Proof-of-Skill™';
+  if (currentPhase === 'Learn') return 'Start Learning';
+  if (currentPhase === 'Prove') return 'Take the Quiz';
+  return 'Ask Zyno for Guidance';
 };
 ```
 
 ```tsx
-<StartCTA
-  label={getCTA()}
-  onClick={handleAction}
-/>
+<StartCTA label={getCTA()} onClick={handleAction} />
 ```
 
 ---
 
 ## 🏷️ 5. CTA Design par Phase
 
-| Phase    | CTA Label                   | Style      |
-| -------- | --------------------------- | ---------- |
-| Learn    | “Start Now with Zyno”       | Primary    |
-| Build    | “Create your first project” | Green Glow |
+| Phase    | CTA Label                    | Style      |
+| -------- | ---------------------------- | ---------- |
+| Learn    | “Start Now with Zyno”        | Primary    |
+| Build    | “Create your first project”  | Green Glow |
 | Prove    | “Mint your Proof-of-Skill™” | Purple CTA |
-| Activate | “Join a DAO vote”           | Dark/DAO   |
-| Scale    | “Apply to Launchpad”        | Gold Pulse |
+| Activate | “Join a DAO vote”            | Dark/DAO   |
+| Scale    | “Apply to Launchpad”         | Gold Pulse |
 
 ---
 
@@ -585,8 +572,6 @@ const getCTA = () => {
 | NFT mint       | NFT floats and locks into tray      |
 | XP milestone   | Glow + sound                        |
 | Zyno message   | “Zyno eye” blinking or sound bubble |
-
-
 
 ## 📦 Partie 6/6 — Final Developer Roadmap & Deliverables
 
@@ -602,10 +587,10 @@ const getCTA = () => {
 | 🔌 **4. Connecter le wallet & NFT**     | Intégration `wagmi` / `solana-wallet-adapter` + NFT scan      |
 | 🔐 **5. Gérer l’état utilisateur**      | Hook Zustand pour suivre XP, persona, NFTs, etc.              |
 | 💬 **6. Brancher Zyno (IA)**            | API backend pour prompts, suggestions, scoring                |
-| ✨ **7. Animer et optimiser**            | Ajouter Framer Motion + animations conditionnelles            |
+| ✨ **7. Animer et optimiser**           | Ajouter Framer Motion + animations conditionnelles            |
 | 🧪 **8. Tester tous les cas d’usage**   | Persona différents, wallet connecté/déconnecté, gated actions |
 | 🚀 **9. Push en staging**               | Déploiement sur vercel/netlify pour tests communautaires      |
-| ✅ **10. Validation DAO & production**   | Feedback DAO + mise en ligne officielle                       |
+| ✅ **10. Validation DAO & production**  | Feedback DAO + mise en ligne officielle                       |
 
 ---
 
@@ -645,23 +630,24 @@ const getCTA = () => {
 
 ## 🧠 4. Bonnes pratiques
 
-* Toutes les actions doivent donner **un feedback visuel immédiat**
-* Prévoir des **composants réactifs à l’état du wallet**
-* Éviter toute logique conditionnelle hardcodée (tout doit être data-driven)
-* Optimiser pour **mobile-first**
-* Documenter chaque composant en `.md` ou `.tsx` docstring
+- Toutes les actions doivent donner **un feedback visuel immédiat**
+- Prévoir des **composants réactifs à l’état du wallet**
+- Éviter toute logique conditionnelle hardcodée (tout doit être data-driven)
+- Optimiser pour **mobile-first**
+- Documenter chaque composant en `.md` ou `.tsx` docstring
 
 ---
 
 ## ✅ 5. Validation UX & DAO
 
-* Réaliser des tests avec profils variés (builder, investisseur, curieux…)
-* Prendre en compte :
+- Réaliser des tests avec profils variés (builder, investisseur, curieux…)
+- Prendre en compte :
 
-  * Accessibilité (ARIA)
-  * Latence Web3
-  * Adaptabilité des CTA
-* Obtenir feedback DAO via vote Snapshot ou formulaire de validation
+  - Accessibilité (ARIA)
+  - Latence Web3
+  - Adaptabilité des CTA
+
+- Obtenir feedback DAO via vote Snapshot ou formulaire de validation
 
 ---
 
@@ -669,10 +655,10 @@ const getCTA = () => {
 
 Cette page est **le cœur de l’expérience utilisateur MFAI**. Elle doit incarner :
 
-* L’esprit de **gamification intelligente**
-* L’utilité concrète des **NFTs comme preuve**
-* La présence vivante de **Zyno comme mentor IA**
-* Le rôle actif du token **\$MFAI comme moteur d’engagement**
+- L’esprit de **gamification intelligente**
+- L’utilité concrète des **NFTs comme preuve**
+- La présence vivante de **Zyno comme mentor IA**
+- Le rôle actif du token **\$MFAI comme moteur d’engagement**
 
 ---
 
@@ -683,6 +669,7 @@ Cette page est **le cœur de l’expérience utilisateur MFAI**. Elle doit incar
 The “User Journeys” page must function as a **narrative simulator**, allowing all visitors — even those without a wallet — to fully understand how they could evolve through the Money Factory AI protocol.
 
 #### Core Objectives:
+
 - Explain and illustrate the **Cognitive Activation Protocol™**
 - Help users self-identify via personas and project into a gamified path
 - Provide an interactive, frictionless preview (no NFT/wallet gating)
@@ -694,6 +681,7 @@ The “User Journeys” page must function as a **narrative simulator**, allowin
 ### 🧪 2. Functional Simulation — Key Mechanics
 
 Each journey must allow full navigation through the 5 phases via:
+
 - ⏭️ Manual navigation: Next / Previous buttons
 - 📈 Dynamic dashboard preview:
   - XP progression bar
@@ -705,6 +693,7 @@ Each journey must allow full navigation through the 5 phases via:
   - Optional unlocks via NFT Pass
 
 #### Developer Notes:
+
 - Use React state or Zustand to simulate progress
 - XP and rewards should update locally only
 - Zyno should appear as a **non-interactive assistant box** in this prototype
@@ -715,16 +704,17 @@ Each journey must allow full navigation through the 5 phases via:
 ### 🪙 3. NFT Pass Integration (Optional but Visible)
 
 NFT Passes (Gold, Platinum, Diamond) must **not block access**, but should:
+
 - Show visually what they would **unlock/enhance**
 - Appear as optional “power-ups” per phase
 
-| Phase    | With NFT Pass Example                          |
-| -------- | ---------------------------------------------- |
-| Learn    | Bonus XP for Gold Pass holders                 |
-| Build    | Unlock premium templates with Platinum Pass    |
-| Prove    | Fast-track certification with Diamond Pass     |
-| Activate | DAO role booster (Platinum and above)          |
-| Scale    | Eligible for Neuro-Dividends™ with any Pass    |
+| Phase    | With NFT Pass Example                        |
+| -------- | -------------------------------------------- |
+| Learn    | Bonus XP for Gold Pass holders               |
+| Build    | Unlock premium templates with Platinum Pass  |
+| Prove    | Fast-track certification with Diamond Pass   |
+| Activate | DAO role booster (Platinum and above)        |
+| Scale    | Eligible for Neuro-Dividends™ with any Pass |
 
 > 🏷️ Use visual badges and tooltips, not modals or lock icons.
 
@@ -733,19 +723,23 @@ NFT Passes (Gold, Platinum, Diamond) must **not block access**, but should:
 ### 🎨 4. Design Alignment: Solana + MFAI Brand
 
 #### 🎨 Color Scheme:
+
 - Base: `#0F172A` (dark blue/black)
 - Accent: `#22D3EE` (cyan), `#C084FC` (purple), `#14F195` (mint)
 - Gradients: `linear-gradient(90deg, #9945FF, #14F195)`
 
 #### 🖋️ Fonts:
+
 - Headings: `Space Grotesk` or `General Sans`
 - Body: `Inter`, `Geist`, or `Manrope`
 
 #### 🖼️ Icons:
+
 - Use only `Lucide`, `Phosphor` or custom MFAI icons
 - Replace Telegram-style emojis with semantic React-based icons
 
 ✅ Examples:
+
 - 🎓 → `<GraduationCapIcon />`
 - 💰 → `<BanknoteIcon />`
 - 🛠️ → `<WrenchIcon />`
@@ -757,6 +751,7 @@ NFT Passes (Gold, Platinum, Diamond) must **not block access**, but should:
 Use **MFAI-native narrative** and terms across all journeys.
 
 #### ✅ Valid Persona Names:
+
 - Curious Student
 - Web2 Entrepreneur
 - Aspiring Investor
@@ -765,30 +760,27 @@ Use **MFAI-native narrative** and terms across all journeys.
 - Visionary Creator
 
 #### ❌ Do Not Use:
+
 - “path”, “course”, “module”, “advisor”
 
 #### ✅ Use Instead:
-| Generic Term | MFAI Language           |
-| ------------ | ------------------------ |
-| Path         | Cognitive Journey        |
-| Phase Step   | Activation Phase         |
-| Certification| Proof-of-Skill™ NFT      |
-| Coach/Guide  | Zyno AI Co-Founder™      |
-| Learning     | Skillchain Mining™       |
+
+| Generic Term  | MFAI Language        |
+| ------------- | -------------------- |
+| Path          | Cognitive Journey    |
+| Phase Step    | Activation Phase     |
+| Certification | Proof-of-Skill™ NFT |
+| Coach/Guide   | Zyno AI Co-Founder™ |
+| Learning      | Skillchain Mining™  |
 
 ---
 
 ### 🧠 Final Reminder for Dev
 
 This page must:
+
 - Simulate **value**, not just UI
 - Emulate **progression**, not navigation
 - Visualize **transformation**, not content
 
 > Zyno should feel present. XP should feel earned. And every user should walk away wanting to activate their journey.
-
-
-
-
-
-

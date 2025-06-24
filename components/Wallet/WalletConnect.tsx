@@ -5,7 +5,7 @@ import { getUserNFTs } from '../../utils/nftUtils';
 
 /**
  * WalletConnect Component
- * 
+ *
  * Handles wallet connection for both EVM (Ethereum) and Solana chains
  * Uses RainbowKit for EVM and Phantom for Solana
  */
@@ -19,16 +19,10 @@ interface WalletConnectProps {
 const WalletConnect: FC<WalletConnectProps> = ({
   onConnect,
   onDisconnect,
-  buttonStyle = 'default'
+  buttonStyle = 'default',
 }) => {
-  const { 
-    walletConnected, 
-    walletAddress, 
-    walletType,
-    connectWallet, 
-    disconnectWallet,
-    addNFT
-  } = useStore();
+  const { walletConnected, walletAddress, walletType, connectWallet, disconnectWallet, addNFT } =
+    useStore();
 
   // Fetch NFTs when wallet connects
   useEffect(() => {
@@ -56,9 +50,9 @@ const WalletConnect: FC<WalletConnectProps> = ({
       // For now, we'll simulate with a mock address
       const mockAddress = '0x1234567890123456789012345678901234567890';
       const mockChain = 'ethereum';
-      
+
       await connectWallet(mockAddress, mockChain);
-      
+
       if (onConnect) {
         onConnect(mockAddress);
       }
@@ -70,7 +64,7 @@ const WalletConnect: FC<WalletConnectProps> = ({
   // Handle disconnect wallet
   const handleDisconnect = () => {
     disconnectWallet();
-    
+
     if (onDisconnect) {
       onDisconnect();
     }
@@ -95,41 +89,47 @@ const WalletConnect: FC<WalletConnectProps> = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       {walletConnected ? (
-        <button
-          onClick={handleDisconnect}
-          className={`transition-colors ${getButtonStyles()}`}
-        >
+        <button onClick={handleDisconnect} className={`transition-colors ${getButtonStyles()}`}>
           {buttonStyle === 'minimal' ? (
             'Disconnect'
           ) : (
             <>
               <span className="w-2 h-2 rounded-full bg-green-400"></span>
-              {buttonStyle === 'expanded' 
+              {buttonStyle === 'expanded'
                 ? `${walletAddress?.substring(0, 6)}...${walletAddress?.substring(walletAddress.length - 4)}`
-                : 'Disconnect'
-              }
+                : 'Disconnect'}
             </>
           )}
         </button>
       ) : (
-        <button
-          onClick={handleConnect}
-          className={`transition-colors ${getButtonStyles()}`}
-        >
+        <button onClick={handleConnect} className={`transition-colors ${getButtonStyles()}`}>
           {buttonStyle === 'minimal' ? (
             'Connect'
           ) : (
             <>
               {buttonStyle === 'expanded' && (
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M19 7H5C3.89543 7 3 7.89543 3 9V15C3 16.1046 3.89543 17 5 17H19C20.1046 17 21 16.1046 21 15V9C21 7.89543 20.1046 7 19 7Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M3 10H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M19 7H5C3.89543 7 3 7.89543 3 9V15C3 16.1046 3.89543 17 5 17H19C20.1046 17 21 16.1046 21 15V9C21 7.89543 20.1046 7 19 7Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M3 10H21"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               )}
               Connect Wallet

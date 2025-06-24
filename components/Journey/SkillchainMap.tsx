@@ -26,7 +26,7 @@ export default function SkillchainMap({ relatedJourneys }: SkillchainMapProps) {
       <p className="text-sm text-gray-400 mb-4">
         Continue your learning journey with these related paths
       </p>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {relatedJourneys.map((journey, index) => (
           <motion.div

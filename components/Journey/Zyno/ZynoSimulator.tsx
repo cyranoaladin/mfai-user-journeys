@@ -13,10 +13,26 @@ interface ZynoSimulatorProps {
 
 const personas = [
   { id: 'beginner', name: 'Crypto Beginner', description: 'New to Web3 and blockchain concepts' },
-  { id: 'investor', name: 'Passive Investor', description: 'Interested in long-term value and stability' },
-  { id: 'builder', name: 'Web3 Builder', description: 'Technical background, wants to build dApps' },
-  { id: 'creator', name: 'Content Creator', description: 'Focused on community and content creation' },
-  { id: 'trader', name: 'Active Trader', description: 'Experienced in markets and trading strategies' }
+  {
+    id: 'investor',
+    name: 'Passive Investor',
+    description: 'Interested in long-term value and stability',
+  },
+  {
+    id: 'builder',
+    name: 'Web3 Builder',
+    description: 'Technical background, wants to build dApps',
+  },
+  {
+    id: 'creator',
+    name: 'Content Creator',
+    description: 'Focused on community and content creation',
+  },
+  {
+    id: 'trader',
+    name: 'Active Trader',
+    description: 'Experienced in markets and trading strategies',
+  },
 ];
 
 export default function ZynoSimulator({ isOpen, onClose, journeySlug }: ZynoSimulatorProps) {
@@ -26,9 +42,9 @@ export default function ZynoSimulator({ isOpen, onClose, journeySlug }: ZynoSimu
 
   const handleSimulate = () => {
     if (!selectedPersona) return;
-    
+
     setIsLoading(true);
-    
+
     // Simulate API call delay
     setTimeout(() => {
       // Redirect to a simulated page (you would create this page)
@@ -45,14 +61,16 @@ export default function ZynoSimulator({ isOpen, onClose, journeySlug }: ZynoSimu
           <BrainCircuit className="h-8 w-8 text-blue-400" />
           <div>
             <h4 className="font-medium text-white">Zyno AI Simulator</h4>
-            <p className="text-sm text-gray-300">Experience a personalized journey based on your profile</p>
+            <p className="text-sm text-gray-300">
+              Experience a personalized journey based on your profile
+            </p>
           </div>
         </div>
-        
+
         <div className="mt-4">
           <h4 className="text-sm font-medium text-gray-300 mb-2">Select a persona:</h4>
           <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
-            {personas.map((persona) => (
+            {personas.map(persona => (
               <motion.div
                 key={persona.id}
                 whileHover={{ scale: 1.02 }}
@@ -77,13 +95,9 @@ export default function ZynoSimulator({ isOpen, onClose, journeySlug }: ZynoSimu
             ))}
           </div>
         </div>
-        
+
         <div className="flex justify-end gap-3 mt-6">
-          <Button 
-            variant="outline" 
-            onClick={onClose}
-            className="px-4 py-2"
-          >
+          <Button variant="outline" onClick={onClose} className="px-4 py-2">
             Cancel
           </Button>
           <Button

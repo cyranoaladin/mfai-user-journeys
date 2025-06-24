@@ -9,27 +9,32 @@
 export interface JourneyMetadata {
   title: string;
   subtitle: string;
-  tagline: string;
-  target: string;
-  profileType: string;
-  missionType: string;
-  icon: string;
-  slug: string;
   description: string;
+  icon: string;
+  profileType: string;
+  target: string;
+  missionType?: string;
+  slug: string;
+  tagline: string;
 }
 
-// Type pour les phases compatible avec journeyData.ts, markdownParser.ts et [slug].tsx
+// Type for phases compatible with journeyData.ts, markdownParser.ts and [slug].tsx
 export interface JourneyPhase {
-  name: string;
+  name?: string;
   title: string;
-  content: string;
-  icon: string;
   description: string;
-  mission: string;
-  xpReward: number;
+  mission?: string;
+  xpReward?: number;
+  xp?: number;
+  reward?: string;
   nftReward?: string;
   locked?: boolean;
   duration?: string;
+  content?: string;
+  icon?: string;
+  estimatedTime?: string;
+  // Indique à quelle étape du Cognitive Activation Protocol™ cette phase correspond
+  protocolPhase?: 'Learn' | 'Build' | 'Prove' | 'Activate' | 'Scale' | 'Cognitive' | 'Synaptic' | 'Neural' | 'Activation' | 'Amplification';
 }
 
 // Type pour les récompenses
@@ -74,4 +79,50 @@ export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   error?: string;
+}
+
+export interface ProofData {
+  title: string;
+  description: string;
+  imageUrl: string;
+  link: string;
+  tags: string[];
+}
+
+export interface JourneyData {
+  metadata: JourneyMetadata;
+  phases: JourneyPhase[];
+  callToAction: string[];
+  rewards: {
+    milestone: string;
+    proof: string;
+    utility: string;
+  }[];
+  whyItMatters: string;
+  finalRole: string;
+}
+
+export interface Proof {
+  id: string;
+  title: string;
+  description: string;
+  isUnlocked: boolean;
+}
+
+export interface Journey {
+  id: string;
+  title: string;
+  description: string;
+  phases: Phase[];
+  rewards: Proof[];
+  whyItMatters?: string;
+  finalRole?: string;
+}
+
+export interface Phase {
+  id: string;
+  title: string;
+  description: string;
+  order: number;
+  isComplete: boolean;
 }

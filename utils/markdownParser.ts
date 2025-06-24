@@ -1,70 +1,49 @@
 import matter from 'gray-matter';
-import { remark } from 'remark';
-import html from 'remark-html';
 
-// Ces imports ne seront utilisés que côté serveur
+// These imports will only be used server-side
 let fs: any;
 let path: any;
 
-// Vérifier si nous sommes côté serveur
+// Check if we are server-side
 if (typeof window === 'undefined') {
   fs = require('fs');
   path = require('path');
 }
 
 // Import centralized types
-import { JourneyMetadata, JourneyPhase, JourneyReward, JourneyContent } from '../types/journey';
+import { JourneyContent, JourneyMetadata, JourneyPhase, JourneyReward } from '@/types';
 
 // Re-export types for backward compatibility
-export type { JourneyMetadata, JourneyPhase, JourneyReward, JourneyContent };
-
-// Define fallback interfaces for backward compatibility
-interface JourneyPhaseMinimal {
-  name: string;
-  title: string;
-  content: string;
-  icon: string;
-}
-
-interface JourneyRewardMinimal {
-  milestone: string;
-  proof: string;
-  utility: string;
-}
-
-// Helper function to convert minimal phase to full phase
-export function enrichPhase(phase: JourneyPhaseMinimal): JourneyPhase {
-  return {
-    ...phase,
-    description: phase.content.substring(0, 100) + '...',  // Default description from content
-    mission: 'Complete this phase',  // Default mission
-    xpReward: 100,  // Default XP reward
-  };
-}
+export type { JourneyContent, JourneyMetadata, JourneyPhase, JourneyReward };
 
 // Parse a markdown file and extract structured content
 export async function parseJourneyMarkdown(filePath: string): Promise<JourneyContent> {
   if (typeof window !== 'undefined') {
     throw new Error('parseJourneyMarkdown should only be called server-side');
   }
-  
+
   // Read the file content
   const fileContents = fs.readFileSync(filePath, 'utf8');
-  
+
   // Use gray-matter to parse the metadata section
-  const { content } = matter(fileContents);
-  
+  const { content, data } = matter(fileContents);
+
+  // Extract phases from frontmatter if available
+  const frontmatterPhases = data.phases || [];
+  console.log('Frontmatter data:', data);
+  console.log('Frontmatter phases:', frontmatterPhases);
+
   // Extract title, subtitle, and tagline from the markdown
   const titleMatch = content.match(/## (.*?)\n/);
   const subtitleMatch = content.match(/\*\*\*From (.*?)\*\*\*/);
   const taglineMatch = content.match(/> \*"(.*?)"\*/);
-  
+
   // Extract target audience
   const targetMatch = content.match(/You are a \*\*(.*?)\*\*/);
-  
+
   // Determine profile type and mission type based on the filename or content
   const fileName = path.basename(filePath);
-  
+
   // Map profile types
   let profileType = 'Explorer'; // Default
   if (fileName.includes('Web2_Hustler') || fileName.includes('Idea_Carrier')) {
@@ -80,7 +59,7 @@ export async function parseJourneyMarkdown(filePath: string): Promise<JourneyCon
   } else if (fileName.includes('Project_Manager')) {
     profileType = 'Operator';
   }
-  
+
   // Map mission types
   let missionType = 'Learn'; // Default
   if (fileName.includes('Engineer') || fileName.includes('Sovereign')) {
@@ -92,91 +71,127 @@ export async function parseJourneyMarkdown(filePath: string): Promise<JourneyCon
   } else if (fileName.includes('Backer')) {
     missionType = 'Scale';
   }
-  
+
   // Extract phases
-  const phasesRegex = /### 🌱 \*\*Phase 0:(.*?)---\n\n### 🧠 \*\*Phase 1:(.*?)---\n\n### 🔗 \*\*Phase 2:(.*?)---\n\n### 🧬 \*\*Phase 3:(.*?)---\n\n### 🚀 \*\*Phase 4:(.*?)---/;
+  const phasesRegex =
+    /### 🌱 \*\*Phase 0:(.*?)---\n\n### 🧠 \*\*Phase 1:(.*?)---\n\n### 🔗 \*\*Phase 2:(.*?)---\n\n### 🧬 \*\*Phase 3:(.*?)---\n\n### 🚀 \*\*Phase 4:(.*?)---/;
   const phasesMatch = content.match(phasesRegex);
-  
-  const phases = [];
+
+  const phases: Array<{
+    name: string;
+    title: string;
+    content: string;
+    icon: string;
+  }> = [];
   if (phasesMatch) {
     const phaseIcons = ['🌱', '🧠', '🔗', '🧬', '🚀'];
     const phaseNames = ['Phase 0', 'Phase 1', 'Phase 2', 'Phase 3', 'Phase 4'];
-    
+
     for (let i = 1; i <= 5; i++) {
       phases.push({
-        name: phaseNames[i-1],
+        name: phaseNames[i - 1],
         title: phasesMatch[i].split('**')[0].trim(),
         content: phasesMatch[i],
-        icon: phaseIcons[i-1]
+        icon: phaseIcons[i - 1],
       });
     }
   }
-  
+
   // Extract rewards table
   const rewardsRegex = /\| (.*?) \| (.*?) \| (.*?) \|/g;
-  const rewardsMatches = [...content.matchAll(rewardsRegex)];
-  
-  const rewards = [];
+  const rewards: Array<{
+    milestone: string;
+    proof: string;
+    utility: string;
+  }> = [];
+  let match;
+
   // Skip the header row
-  for (let i = 1; i < rewardsMatches.length; i++) {
+  while ((match = rewardsRegex.exec(content)) !== null) {
     rewards.push({
-      milestone: rewardsMatches[i][1].trim(),
-      proof: rewardsMatches[i][2].trim(),
-      utility: rewardsMatches[i][3].trim()
+      milestone: match[1].trim(),
+      proof: match[2].trim(),
+      utility: match[3].trim(),
     });
   }
-  
+
   // Extract "Why it matters" section
   const whyItMattersRegex = /### 🧩 Why it matters\n\n([\s\S]*?)---/;
   const whyItMattersMatch = content.match(whyItMattersRegex);
   const whyItMatters = whyItMattersMatch ? whyItMattersMatch[1].trim() : '';
-  
+
   // Extract final role from the "Why it matters" section
   const finalRoleRegex = /from (.*?) to \*\*(.*?)\*\*/;
   const finalRoleMatch = whyItMatters.match(finalRoleRegex);
   const finalRole = finalRoleMatch ? finalRoleMatch[2] : '';
-  
+
   // Extract call to action
   const ctaRegex = /### 🔍 Want to step in\?\n\n([\s\S]*?)$/;
   const ctaMatch = content.match(ctaRegex);
   const ctaContent = ctaMatch ? ctaMatch[1].trim() : '';
-  const callToAction = ctaContent.split('\n').map((line: string) => line.replace(/^📎 \*|^🧠 \*|^🚀 \*/, '').replace(/\*$/, '').trim());
-  
+  const callToAction = ctaContent.split('\n').map((line: string) =>
+    line
+      .replace(/^📎 \*|^🧠 \*|^🚀 \*/, '')
+      .replace(/\*$/, '')
+      .trim()
+  );
+
   // Determine icon based on profile type
   const iconMap: Record<string, string> = {
-    'Builder': '⚒️',
-    'Creator': '🎨',
-    'Strategist': '🧠',
-    'Investor': '💰',
-    'Researcher': '🔍',
-    'Operator': '⚙️',
-    'Explorer': '🧭'
+    Builder: '⚒️',
+    Creator: '🎨',
+    Strategist: '🧠',
+    Investor: '💰',
+    Researcher: '🔍',
+    Operator: '⚙️',
+    Explorer: '🧭',
   };
-  
+
   // Extract slug from filename
   const slug = path.basename(filePath, '.md');
 
-  // Créer un objet JourneyContent compatible avec notre interface centralisée
+  // Create a JourneyContent object compatible with our centralized interface
   const journeyContent: JourneyContent = {
     metadata: {
-      title: titleMatch ? titleMatch[1].trim() : '',
+      // Use frontmatter data if available, otherwise fall back to regex extraction
+      title: data.title || (titleMatch ? titleMatch[1].trim() : ''),
       subtitle: subtitleMatch ? `From ${subtitleMatch[1].trim()}` : '',
       tagline: taglineMatch ? taglineMatch[1].trim() : '',
       target: targetMatch ? targetMatch[1].trim() : '',
       profileType,
       missionType,
       icon: iconMap[profileType],
-      slug,
-      description: taglineMatch ? taglineMatch[1].trim() : 'Journey description' // Ajout du champ description requis
+      slug: data.slug || slug,
+      description: taglineMatch ? taglineMatch[1].trim() : 'Journey description',
     },
-    // Enrichir les phases avec les champs requis par JourneyPhase
-    phases: phases.map(phase => enrichPhase(phase)),
+    // Use frontmatter phases if available, otherwise use regex-extracted phases
+    phases:
+      frontmatterPhases.length > 0
+        ? frontmatterPhases.map((phase: any) => ({
+          name: phase.phase || '',
+          title: phase.title || '',
+          content: '',
+          icon: '🚀',
+          description: phase.mission || '',
+          mission: phase.mission || 'Complete this phase',
+          xpReward: phase.xpReward || 100,
+          nftReward: phase.nftReward || '',
+        }))
+        : phases.map(phase => ({
+          name: phase.name,
+          title: phase.title,
+          description: phase.content.substring(0, 100) + '...',
+          content: phase.content,
+          icon: phase.icon,
+          mission: 'Complete this phase',
+          xpReward: 100,
+        })),
     rewards,
     whyItMatters,
     finalRole,
-    callToAction
+    callToAction,
   };
-  
+
   return journeyContent;
 }
 
@@ -185,28 +200,29 @@ export function getJourneyFiles(): string[] {
   if (typeof window !== 'undefined') {
     throw new Error('getJourneyFiles should only be called server-side');
   }
-  
+
   const journeyDir = path.join(process.cwd(), 'journeys');
-  
+
   // Check if directory exists
   if (!fs.existsSync(journeyDir)) {
     console.warn(`Journey directory not found at ${journeyDir}. Using fallback path.`);
     // Use absolute path as fallback
-    const fallbackDir = '/home/alaeddine/Documents/Moneyfactory/pages_web_parcours/mfai-user-journeys/journeys';
+    const fallbackDir =
+      '/home/alaeddine/Documents/Moneyfactory/pages_web_parcours/mfai-user-journeys/journeys';
     if (fs.existsSync(fallbackDir)) {
-      const fileNames = fs.readdirSync(fallbackDir).filter(
-        (file: string) => file.startsWith('From_') && file.endsWith('.md')
-      );
+      const fileNames = fs
+        .readdirSync(fallbackDir)
+        .filter((file: string) => file.startsWith('From_') && file.endsWith('.md'));
       return fileNames.map((fileName: string) => path.join(fallbackDir, fileName));
     } else {
       console.error('Fallback journey directory not found either!');
       return [];
     }
   }
-  
-  const fileNames = fs.readdirSync(journeyDir).filter(
-    (file: string) => file.startsWith('From_') && file.endsWith('.md')
-  );
+
+  const fileNames = fs
+    .readdirSync(journeyDir)
+    .filter((file: string) => file.startsWith('From_') && file.endsWith('.md'));
   return fileNames.map((fileName: string) => path.join(journeyDir, fileName));
 }
 
@@ -215,21 +231,23 @@ export async function getAllJourneys(): Promise<JourneyContent[]> {
   if (typeof window !== 'undefined') {
     throw new Error('getAllJourneys should only be called server-side');
   }
-  
+
   const journeyFiles = getJourneyFiles();
   const journeys = await Promise.all(
     journeyFiles.map(async (filePath: string) => {
       const content = await parseJourneyMarkdown(filePath);
       const fileName: string = path.basename(filePath);
-      // Set the slug in the metadata - convert to lowercase and normalize
-      content.metadata.slug = fileName.replace(/\.md$/, '')
-        .toLowerCase()
-        .replace(/_/g, '-');
-      
+
+      // Only set the slug from filename if it's not already set in frontmatter
+      if (!content.metadata.slug) {
+        // Set the slug in the metadata - convert to lowercase and normalize
+        content.metadata.slug = fileName.replace(/\.md$/, '').toLowerCase().replace(/_/g, '-');
+      }
+
       return content;
     })
   );
-  
+
   return journeys;
 }
 
@@ -238,16 +256,39 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyContent | n
   if (typeof window !== 'undefined') {
     throw new Error('getJourneyBySlug should only be called server-side');
   }
-  
+
   // Normalize the slug for comparison (replace underscores with hyphens)
   const normalizedSlug = slug.toLowerCase().replace(/_/g, '-');
-  
+
+  console.log(`Looking for journey with slug: ${normalizedSlug}`);
+
   // Get all journeys and find the one with the matching slug
   const journeys = await getAllJourneys();
-  const matchingJourney = journeys.find(journey => 
-    journey.metadata.slug === normalizedSlug ||
-    journey.metadata.slug.includes(normalizedSlug)
+
+  // Log all available journeys and their slugs for debugging
+  console.log('Available journeys:');
+  journeys.forEach(journey => {
+    console.log(`- Title: ${journey.metadata.title}, Slug: ${journey.metadata.slug}`);
+  });
+
+  // Find the matching journey with exact match first, then partial match
+  const exactMatch = journeys.find(journey => journey.metadata.slug === normalizedSlug);
+
+  if (exactMatch) {
+    console.log(`Found exact match for slug: ${normalizedSlug}`);
+    return exactMatch;
+  }
+
+  // Try partial match if no exact match found
+  const partialMatch = journeys.find(
+    journey => journey.metadata.slug && journey.metadata.slug.includes(normalizedSlug)
   );
-  
-  return matchingJourney || null;
+
+  if (partialMatch) {
+    console.log(`Found partial match for slug: ${normalizedSlug} -> ${partialMatch.metadata.slug}`);
+    return partialMatch;
+  }
+
+  console.log(`No journey found for slug: ${normalizedSlug}`);
+  return null;
 }

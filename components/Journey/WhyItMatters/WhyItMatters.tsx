@@ -18,10 +18,12 @@ const WhyItMatters: FC<WhyItMattersProps> = ({ content }) => {
     >
       <h3 className="text-xl font-semibold mb-4">Why It Matters</h3>
       <div className="prose prose-invert max-w-none">
-        <div 
-          dangerouslySetInnerHTML={{ 
-            __html: content || 'This journey will help you understand key concepts in the Money Factory ecosystem.' 
-          }} 
+        <div
+          dangerouslySetInnerHTML={{
+            __html:
+              content ||
+              'This journey will help you understand key concepts in the Money Factory ecosystem.',
+          }}
         />
       </div>
     </motion.div>

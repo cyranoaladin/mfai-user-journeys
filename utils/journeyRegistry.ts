@@ -13,60 +13,60 @@ export interface JourneyLink {
 
 export const journeyRegistry: JourneyLink[] = [
   {
-    slug: "from-silent-watcher-to-protocol-backer",
-    title: "From Silent Watcher to Protocol Backer",
-    profileType: "Observer",
-    next: "from-community-voice-to-synaptic-strategist",
-    badgeEmoji: "👀"
+    slug: 'from-silent-watcher-to-protocol-backer',
+    title: 'From Silent Watcher to Protocol Backer',
+    profileType: 'Observer',
+    next: 'from-community-voice-to-synaptic-strategist',
+    badgeEmoji: '👀',
   },
   {
-    slug: "from-community-voice-to-synaptic-strategist",
-    title: "From Community Voice to Synaptic Strategist",
-    profileType: "Connector",
-    prev: "from-silent-watcher-to-protocol-backer",
-    next: "from-content-maker-to-cognitive-publisher",
-    badgeEmoji: "📢"
+    slug: 'from-community-voice-to-synaptic-strategist',
+    title: 'From Community Voice to Synaptic Strategist',
+    profileType: 'Connector',
+    prev: 'from-silent-watcher-to-protocol-backer',
+    next: 'from-content-maker-to-cognitive-publisher',
+    badgeEmoji: '📢',
   },
   {
-    slug: "from-content-maker-to-cognitive-publisher",
-    title: "From Content Maker to Cognitive Publisher",
-    profileType: "Creator",
-    prev: "from-community-voice-to-synaptic-strategist",
-    next: "from-data-miner-to-intelligence-synthesizer",
-    badgeEmoji: "🧠"
+    slug: 'from-content-maker-to-cognitive-publisher',
+    title: 'From Content Maker to Cognitive Publisher',
+    profileType: 'Creator',
+    prev: 'from-community-voice-to-synaptic-strategist',
+    next: 'from-data-miner-to-intelligence-synthesizer',
+    badgeEmoji: '🧠',
   },
   {
-    slug: "from-data-miner-to-intelligence-synthesizer",
-    title: "From Data Miner to Intelligence Synthesizer",
-    profileType: "Analyzer",
-    prev: "from-content-maker-to-cognitive-publisher",
-    next: "from-project-manager-to-mission-commander",
-    badgeEmoji: "📊"
+    slug: 'from-data-miner-to-intelligence-synthesizer',
+    title: 'From Data Miner to Intelligence Synthesizer',
+    profileType: 'Analyzer',
+    prev: 'from-content-maker-to-cognitive-publisher',
+    next: 'from-project-manager-to-mission-commander',
+    badgeEmoji: '📊',
   },
   {
-    slug: "from-project-manager-to-mission-commander",
-    title: "From Project Manager to Mission Commander",
-    profileType: "Leader",
-    prev: "from-data-miner-to-intelligence-synthesizer",
-    next: "from-idea-carrier-to-protocol-engineer",
-    badgeEmoji: "🚀",
-    featured: true
+    slug: 'from-project-manager-to-mission-commander',
+    title: 'From Project Manager to Mission Commander',
+    profileType: 'Leader',
+    prev: 'from-data-miner-to-intelligence-synthesizer',
+    next: 'from-idea-carrier-to-protocol-engineer',
+    badgeEmoji: '🚀',
+    featured: true,
   },
   {
-    slug: "from-idea-carrier-to-protocol-engineer",
-    title: "From Idea Carrier to Protocol Engineer",
-    profileType: "Builder",
-    prev: "from-project-manager-to-mission-commander",
-    next: "from-web2-hustler-to-web3-sovereign",
-    badgeEmoji: "🛠️"
+    slug: 'from-idea-carrier-to-protocol-engineer',
+    title: 'From Idea Carrier to Protocol Engineer',
+    profileType: 'Builder',
+    prev: 'from-project-manager-to-mission-commander',
+    next: 'from-web2-hustler-to-web3-sovereign',
+    badgeEmoji: '🛠️',
   },
   {
-    slug: "from-web2-hustler-to-web3-sovereign",
-    title: "From Web2 Hustler to Web3 Sovereign",
-    profileType: "Entrepreneur",
-    prev: "from-idea-carrier-to-protocol-engineer",
-    badgeEmoji: "🧱"
-  }
+    slug: 'from-web2-hustler-to-web3-sovereign',
+    title: 'From Web2 Hustler to Web3 Sovereign',
+    profileType: 'Entrepreneur',
+    prev: 'from-idea-carrier-to-protocol-engineer',
+    badgeEmoji: '🧱',
+  },
 ];
 
 /**

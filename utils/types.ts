@@ -9,7 +9,10 @@ export * from '../types/journey';
 
 // Import types from journeyData.ts pour la compatibilité avec le code existant
 // mais avec des noms différents pour éviter les conflits
-import { Journey as JourneyFromData, JourneyPhase as JourneyPhaseFromData } from '../utils/journeyData';
+import {
+  Journey as JourneyFromData,
+  JourneyPhase as JourneyPhaseFromData,
+} from '../utils/journeyData';
 
 // Re-export with type keyword for TypeScript mais avec des noms différents
 export type JourneyData = JourneyFromData;

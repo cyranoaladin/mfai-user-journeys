@@ -1,31 +1,10 @@
-import React, { FC } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Unlock, Award, Brain, Sparkles } from 'lucide-react';
-import RewardBadge from './RewardBadge';
-import { JourneyContent } from '../../../utils/markdownParser';
-
-// Fonction utilitaire pour mapper les noms de jalons aux chemins d'images SVG
-const getBadgeImageUrl = (milestone: string): string => {
-  // Mapping des noms de jalons aux noms de fichiers SVG
-  const badgeMapping: Record<string, string> = {
-    'Cognitive Milestone': '/nfts/learn-badge.svg',
-    'Synaptic Milestone': '/nfts/build-badge.svg',
-    'Neural Milestone': '/nfts/prove-badge.svg',
-    'Activation Milestone': '/nfts/activate-badge.svg',
-    'Amplification Milestone': '/nfts/scale-badge.svg',
-    // Fallbacks pour les anciens noms si nécessaire
-    'Learn Milestone': '/nfts/learn-badge.svg',
-    'Build Milestone': '/nfts/build-badge.svg',
-    'Prove Milestone': '/nfts/prove-badge.svg',
-    'Activate Milestone': '/nfts/activate-badge.svg',
-    'Scale Milestone': '/nfts/scale-badge.svg',
-  };
-  
-  return badgeMapping[milestone] || '/nfts/learn-badge.svg'; // Image par défaut si le jalon n'est pas trouvé
-};
+import { cn } from '@/lib/utils';
+import { Proof } from '@/types/journey';
+import { CheckCircle, Info, Lock } from 'lucide-react';
+import { FC, useState } from 'react';
 
 interface ProofSectionProps {
-  rewards: JourneyContent['rewards'];
+  proofs: Proof[];
   unlockedProofs: number[];
   onProofClick: (index: number) => void;
 }
@@ -33,72 +12,68 @@ interface ProofSectionProps {
 /**
  * ProofSection Component - Displays Proof-of-Skill Tokens™ and Neuro-Dividends™ for journey completion
  */
-const ProofSection: FC<ProofSectionProps> = ({ 
-  rewards, 
-  unlockedProofs, 
-  onProofClick 
-}) => {
+const ProofSection: FC<ProofSectionProps> = ({ proofs, unlockedProofs, onProofClick }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  
   return (
-    <div className="space-y-6">
-      {/* Explication des badges */}
-      <div className="flex items-center justify-between text-xs text-gray-300 mb-4">
-        <div className="flex items-center gap-2">
-          <Unlock className="h-4 w-4 text-green-400" />
-          <span>Unlocked Tokens</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Lock className="h-4 w-4 text-gray-400" />
-          <span>Locked Tokens</span>
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-white">Proof of Skills</h3>
+        <div className="relative">
+          <button 
+            className="text-blue-400 hover:text-blue-300 transition-colors"
+            onClick={() => setShowTooltip(!showTooltip)}
+          >
+            <Info size={16} />
+          </button>
+          {showTooltip && (
+            <div className="absolute z-50 w-64 p-3 bg-gray-800 border border-gray-700 rounded-md shadow-lg text-sm text-gray-300 -right-2 top-6">
+              <p>Proof-of-Skill Tokens™ represent your mastery of specific skills. Complete phases to unlock these tokens and showcase your expertise. Neuro-Dividends™ are rewards that increase in value as you progress.</p>
+              <div className="absolute -top-2 right-2 w-3 h-3 bg-gray-800 border-t border-l border-gray-700 transform rotate-45"></div>
+            </div>
+          )}
         </div>
       </div>
-      
-      {rewards && rewards.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <AnimatePresence>
-            {rewards.map((reward, index) => {
-              const isUnlocked = unlockedProofs.includes(index);
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`relative ${isUnlocked ? 'z-10' : 'grayscale-[30%] hover:grayscale-0 transition-all duration-300'}`}
+      <p className="text-sm text-gray-400">Complete phases to unlock your Neuro-Dividends™ and Cognitive Lock™ rewards</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {proofs.map((proof, index) => {
+          const isUnlocked = unlockedProofs.includes(index);
+          return (
+            <button
+              key={index}
+              onClick={() => onProofClick(index)}
+              className={cn(
+                'p-4 rounded-lg border transition-all duration-200',
+                isUnlocked
+                  ? 'bg-green-900/20 border-green-500'
+                  : 'bg-gray-800/50 border-gray-700 hover:border-gray-600'
+              )}
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className={cn(
+                    'p-2 rounded-full',
+                    isUnlocked ? 'bg-green-500/20' : 'bg-gray-700/50'
+                  )}
                 >
-                  {isUnlocked && (
-                    <motion.div 
-                      className="absolute -top-2 -right-2 bg-green-500 text-white p-1 rounded-full z-20"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: 'spring', stiffness: 500, delay: index * 0.1 + 0.3 }}
-                    >
-                      <Unlock className="h-4 w-4" />
-                    </motion.div>
+                  {isUnlocked ? (
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  ) : (
+                    <Lock className="h-5 w-5 text-gray-400" />
                   )}
-                  <RewardBadge 
-                    title={`${reward.milestone} ${isUnlocked ? '(Unlocked)' : '(Locked)'}`}
-                    description={reward.proof}
-                    imageUrl={getBadgeImageUrl(reward.milestone)}
-                    claimed={isUnlocked}
-                    onClaim={() => onProofClick(index)}
-                  />
-                  {isUnlocked && (
-                    <div className="mt-2 text-xs text-green-400 flex items-center gap-1">
-                      <Sparkles className="h-3 w-3" />
-                      <span>Cognitive Lock™ unlocked - Neuro-Dividend™ earned</span>
-                    </div>
+                </div>
+                <div className="flex-1 text-left">
+                  <h4 className="font-medium text-white">{proof.title}</h4>
+                  <p className="text-sm text-gray-400 mt-1">{proof.description}</p>
+                  {!isUnlocked && (
+                    <p className="text-xs text-blue-400 mt-1">Complete this phase to unlock</p>
                   )}
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </div>
-      ) : (
-        <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 text-center">
-          <Brain className="h-12 w-12 mx-auto text-gray-500 mb-3" />
-          <p className="text-gray-400">No Proof-of-Skill Tokens™ available for this journey yet.</p>
-        </div>
-      )}
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };

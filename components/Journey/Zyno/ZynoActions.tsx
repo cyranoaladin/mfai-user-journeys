@@ -12,11 +12,7 @@ interface ZynoActionsProps {
 /**
  * ZynoActions Component - Displays Zyno AI assistant actions and buttons
  */
-const ZynoActions: FC<ZynoActionsProps> = ({ 
-  onOpenZynoModal, 
-  onNotifyClick,
-  journeySlug 
-}) => {
+const ZynoActions: FC<ZynoActionsProps> = ({ onOpenZynoModal, onNotifyClick, journeySlug }) => {
   const router = useRouter();
 
   return (
@@ -27,13 +23,13 @@ const ZynoActions: FC<ZynoActionsProps> = ({
         </div>
         <h3 className="text-lg font-semibold">Zyno AI Assistant</h3>
       </div>
-      
+
       <p className="text-sm text-gray-300 mb-4">
         Zyno will guide you through this journey with personalized insights and adaptive learning.
       </p>
-      
+
       <div className="space-y-3">
-        <Button 
+        <Button
           className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
           onClick={onOpenZynoModal}
           aria-label="Simulate with Zyno"
@@ -41,9 +37,9 @@ const ZynoActions: FC<ZynoActionsProps> = ({
           <BrainCircuit className="h-4 w-4" />
           <span>Simulate with Zyno</span>
         </Button>
-        
-        <Button 
-          variant="outline" 
+
+        <Button
+          variant="outline"
           className="w-full flex items-center justify-center gap-2 hover:bg-gray-700 hover:border-gray-600 transition-colors duration-200"
           onClick={onNotifyClick}
           aria-label="Get notified when protocol activates"
@@ -51,8 +47,8 @@ const ZynoActions: FC<ZynoActionsProps> = ({
           <Bell className="h-4 w-4" />
           <span>Notify me when protocol activates</span>
         </Button>
-        
-        <Button 
+
+        <Button
           variant="outline"
           className="w-full flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors duration-200"
           onClick={() => router.push(`/zyno-preview?journey=${journeySlug}`)}

@@ -21,9 +21,9 @@ Marie is a Web2 entrepreneur managing an online store. She stumbles upon [mfai.a
 
 🎁 **Reward**
 
-* Access to her personalized **Skillchain™**
-* First mission unlocked
-* 10 \$MFAI welcome bonus
+- Access to her personalized **Skillchain™**
+- First mission unlocked
+- 10 \$MFAI welcome bonus
 
 ---
 
@@ -35,15 +35,15 @@ She starts completing missions on tokenized business models, AI marketing, and s
 
 🧠 **Tasks**
 
-* Complete 3 Skillchain Missions
-* Earn her first **Proof-of-Skill Token™** (NFT certification)
-* Join her first cohort discussion
+- Complete 3 Skillchain Missions
+- Earn her first **Proof-of-Skill Token™** (NFT certification)
+- Join her first cohort discussion
 
 🎁 **Reward**
 
-* 50 \$MFAI tokens
-* Badge: “Cognitive Explorer”
-* Profile listed in the DAO Talent Radar
+- 50 \$MFAI tokens
+- Badge: “Cognitive Explorer”
+- Profile listed in the DAO Talent Radar
 
 ---
 
@@ -55,15 +55,15 @@ She uses smart contract templates, brand storytelling modules, and governance si
 
 🧠 **Tasks**
 
-* Submit her **Proof-of-Vision™**: strategic document + MVP wireframe
-* Integrate AI + DeFi components
-* Get peer-reviewed by 2 other builders
+- Submit her **Proof-of-Vision™**: strategic document + MVP wireframe
+- Integrate AI + DeFi components
+- Get peer-reviewed by 2 other builders
 
 🎁 **Reward**
 
-* NFT minted with Zyno’s timestamp
-* Access to the **Builder’s Arena**
-* Eligible for Launchpad submission
+- NFT minted with Zyno’s timestamp
+- Access to the **Builder’s Arena**
+- Eligible for Launchpad submission
 
 ---
 
@@ -74,15 +74,15 @@ Marie now contributes back to the community. She mentors two newcomers and valid
 
 🧠 **Tasks**
 
-* Host a Zyno-guided webinar
-* Curate a resource bundle
-* Vote on 1 community mission update
+- Host a Zyno-guided webinar
+- Curate a resource bundle
+- Vote on 1 community mission update
 
 🎁 **Reward**
 
-* Reputation bump → Unlock DAO visibility
-* Badge: “Protocol Contributor”
-* Partial **Neuro-Dividend™** stream unlocked
+- Reputation bump → Unlock DAO visibility
+- Badge: “Protocol Contributor”
+- Partial **Neuro-Dividend™** stream unlocked
 
 ---
 
@@ -94,16 +94,16 @@ The proposal is validated through **Synaptic Governance™**, backed by her Proo
 
 🧠 **Tasks**
 
-* Participate in DAO pitch session
-* Answer questions from curators
-* Submit tokenomics draft co-authored with Zyno
+- Participate in DAO pitch session
+- Answer questions from curators
+- Submit tokenomics draft co-authored with Zyno
 
 🎁 **Reward**
 
-* Launchpad access
-* Initial funding (in \$MFAI + stablecoins)
-* Zyno Pro™ unlocked
-* DAO-wide visibility
+- Launchpad access
+- Initial funding (in \$MFAI + stablecoins)
+- Zyno Pro™ unlocked
+- DAO-wide visibility
 
 ---
 
@@ -114,15 +114,15 @@ Marie is now an **active sovereign** within the protocol. She holds \$MFAI, ment
 
 🧠 **Tasks**
 
-* Stake more \$MFAI to co-create missions
-* Lead a governance vote
-* Be nominated as DAO ambassador
+- Stake more \$MFAI to co-create missions
+- Lead a governance vote
+- Be nominated as DAO ambassador
 
 🎁 **Final Rewards**
 
-* Title: “Protocol Sovereign”
-* Continuous Neuro-Dividends™
-* Lifetime access to MFAI’s ecosystem + first access to DePIN/DePAI deployments
+- Title: “Protocol Sovereign”
+- Continuous Neuro-Dividends™
+- Lifetime access to MFAI’s ecosystem + first access to DePIN/DePAI deployments
 
 ---
 
@@ -135,7 +135,5 @@ Marie is now an **active sovereign** within the protocol. She holds \$MFAI, ment
 | Quests           | Learn ➜ Build ➜ Prove ➜ Activate ➜ Scale |
 | Currency         | \$MFAI Token (earned, staked, used)      |
 | Items            | NFTs (Skill, Vision, Role)               |
-| Boss Levels      | DAO Pitch + Synaptic Governance™         |
+| Boss Levels      | DAO Pitch + Synaptic Governance™        |
 | Final Rank       | Protocol Sovereign                       |
-
-
