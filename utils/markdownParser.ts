@@ -1,4 +1,5 @@
 import matter from 'gray-matter';
+import logger from '@/utils/logger';
 
 // These imports will only be used server-side
 let fs: any;
@@ -30,8 +31,8 @@ export async function parseJourneyMarkdown(filePath: string): Promise<JourneyCon
 
   // Extract phases from frontmatter if available
   const frontmatterPhases = data.phases || [];
-  console.log('Frontmatter data:', data);
-  console.log('Frontmatter phases:', frontmatterPhases);
+  logger.log('Frontmatter data:', data);
+  logger.log('Frontmatter phases:', frontmatterPhases);
 
   // Extract title, subtitle, and tagline from the markdown
   const titleMatch = content.match(/## (.*?)\n/);
@@ -205,7 +206,7 @@ export function getJourneyFiles(): string[] {
 
   // Check if directory exists
   if (!fs.existsSync(journeyDir)) {
-    console.warn(`Journey directory not found at ${journeyDir}. Using fallback path.`);
+    logger.warn(`Journey directory not found at ${journeyDir}. Using fallback path.`);
     // Use absolute path as fallback
     const fallbackDir =
       '/home/alaeddine/Documents/Moneyfactory/pages_web_parcours/mfai-user-journeys/journeys';
@@ -215,7 +216,7 @@ export function getJourneyFiles(): string[] {
         .filter((file: string) => file.startsWith('From_') && file.endsWith('.md'));
       return fileNames.map((fileName: string) => path.join(fallbackDir, fileName));
     } else {
-      console.error('Fallback journey directory not found either!');
+      logger.error('Fallback journey directory not found either!');
       return [];
     }
   }
@@ -260,22 +261,22 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyContent | n
   // Normalize the slug for comparison (replace underscores with hyphens)
   const normalizedSlug = slug.toLowerCase().replace(/_/g, '-');
 
-  console.log(`Looking for journey with slug: ${normalizedSlug}`);
+  logger.log(`Looking for journey with slug: ${normalizedSlug}`);
 
   // Get all journeys and find the one with the matching slug
   const journeys = await getAllJourneys();
 
   // Log all available journeys and their slugs for debugging
-  console.log('Available journeys:');
+  logger.log('Available journeys:');
   journeys.forEach(journey => {
-    console.log(`- Title: ${journey.metadata.title}, Slug: ${journey.metadata.slug}`);
+    logger.log(`- Title: ${journey.metadata.title}, Slug: ${journey.metadata.slug}`);
   });
 
   // Find the matching journey with exact match first, then partial match
   const exactMatch = journeys.find(journey => journey.metadata.slug === normalizedSlug);
 
   if (exactMatch) {
-    console.log(`Found exact match for slug: ${normalizedSlug}`);
+    logger.log(`Found exact match for slug: ${normalizedSlug}`);
     return exactMatch;
   }
 
@@ -285,10 +286,10 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyContent | n
   );
 
   if (partialMatch) {
-    console.log(`Found partial match for slug: ${normalizedSlug} -> ${partialMatch.metadata.slug}`);
+    logger.log(`Found partial match for slug: ${normalizedSlug} -> ${partialMatch.metadata.slug}`);
     return partialMatch;
   }
 
-  console.log(`No journey found for slug: ${normalizedSlug}`);
+  logger.log(`No journey found for slug: ${normalizedSlug}`);
   return null;
 }
