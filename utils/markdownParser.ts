@@ -201,23 +201,14 @@ export function getJourneyFiles(): string[] {
     throw new Error('getJourneyFiles should only be called server-side');
   }
 
-  const journeyDir = path.join(process.cwd(), 'journeys');
+  const journeyDir = process.env.JOURNEY_DIR
+    ? path.resolve(process.env.JOURNEY_DIR)
+    : path.join(process.cwd(), 'journeys');
 
   // Check if directory exists
   if (!fs.existsSync(journeyDir)) {
-    console.warn(`Journey directory not found at ${journeyDir}. Using fallback path.`);
-    // Use absolute path as fallback
-    const fallbackDir =
-      '/home/alaeddine/Documents/Moneyfactory/pages_web_parcours/mfai-user-journeys/journeys';
-    if (fs.existsSync(fallbackDir)) {
-      const fileNames = fs
-        .readdirSync(fallbackDir)
-        .filter((file: string) => file.startsWith('From_') && file.endsWith('.md'));
-      return fileNames.map((fileName: string) => path.join(fallbackDir, fileName));
-    } else {
-      console.error('Fallback journey directory not found either!');
-      return [];
-    }
+    console.error(`Journey directory not found at ${journeyDir}.`);
+    return [];
   }
 
   const fileNames = fs
