@@ -32,7 +32,6 @@
 │   │   ├── PhaseSection.tsx
 │   │   ├── Rewards
 │   │   │   ├── index.ts
-│   │   │   ├── NFTBadge.tsx
 │   │   │   ├── ProofSection.tsx
 │   │   │   └── RewardBadge.tsx
 │   │   ├── SkillchainMap.tsx
@@ -46,7 +45,6 @@
 │   │   ├── Zyno
 │   │   │   ├── index.ts
 │   │   │   ├── ZynoActions.tsx
-│   │   │   ├── ZynoBox.tsx
 │   │   │   └── ZynoSimulator.tsx
 │   │   └── ZynoSimulator.tsx
 │   ├── Layout
