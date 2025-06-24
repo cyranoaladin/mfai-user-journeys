@@ -63,6 +63,25 @@ mfai-user-journeys/
 └── data/
 ```
 
+## Logger Utility
+
+Le fichier `utils/logger.ts` fournit une petite API pour centraliser les appels
+`console.log`, `console.warn` et `console.error`. Les messages sont affichés
+uniquement lorsque `NODE_ENV` n'est pas défini à `production`, ce qui permet de
+garder la console propre en environnement de production.
+
+Utilisation :
+
+```ts
+import logger from './utils/logger';
+
+logger.log('Message informatif');
+logger.warn('Avertissement');
+logger.error('Erreur');
+```
+
+Les journaux sont automatiquement supprimés en production.
+
 ## Contribution
 
 Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou à soumettre une pull request.
