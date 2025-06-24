@@ -46,19 +46,7 @@ import { Progress } from '../../components/ui/progress';
 import { useStore } from '../../utils/store';
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation';
 import usePhaseFeedback from '../../hooks/usePhaseFeedback';
-
-// Local implementation of useToast hook
-const useToast = () => {
-  return {
-    toast: (message: string | { description: string; title?: string; variant?: string }) => {
-      if (typeof message === 'string') {
-        console.log(`Toast: ${message}`);
-      } else {
-        console.log(`Toast: ${message.title || 'Notification'} - ${message.description}`);
-      }
-    }
-  };
-};
+import { useToast } from '../../components/ui/use-toast';
 
 // Data and utilities
 import { JourneyMetadata } from '../../types/journey';

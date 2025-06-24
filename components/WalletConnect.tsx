@@ -3,14 +3,7 @@ import { ChevronDown, Wallet, Link, Coins, Ghost, CircleDollarSign } from 'lucid
 import { useState } from 'react';
 import { useStore } from '../utils/store';
 import { Button } from './ui/button';
-// Create a local toast hook since we don't have the actual hook
-const useToast = () => {
-  return {
-    toast: (message: string, type: 'success' | 'error' | 'warning' | 'info') => {
-      console.log(`Toast: ${message} (${type})`);
-    },
-  };
-};
+import { useToast } from './ui/use-toast';
 
 const walletOptions = [
   { id: 'metamask', name: 'MetaMask', icon: CircleDollarSign },
