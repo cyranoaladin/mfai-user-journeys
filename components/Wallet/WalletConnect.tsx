@@ -2,6 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useStore } from '../../utils/store';
 import { getUserNFTs } from '../../utils/nftUtils';
+import logger from '@/utils/logger';
 
 /**
  * WalletConnect Component
@@ -35,7 +36,7 @@ const WalletConnect: FC<WalletConnectProps> = ({
           // Add each NFT to the store individually
           nfts.forEach(nft => addNFT(nft.name));
         } catch (error) {
-          console.error('Error fetching NFTs:', error);
+          logger.error('Error fetching NFTs:', error);
         }
       }
     };
@@ -57,7 +58,7 @@ const WalletConnect: FC<WalletConnectProps> = ({
         onConnect(mockAddress);
       }
     } catch (error) {
-      console.error('Error connecting wallet:', error);
+      logger.error('Error connecting wallet:', error);
     }
   };
 

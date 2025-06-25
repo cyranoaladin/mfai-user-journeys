@@ -8,6 +8,7 @@ import { JourneyContent } from '@/types';
 import { GetStaticProps } from 'next';
 import { getAllJourneys } from '@/services/journeyService';
 import { useJourneyStore } from '@/stores';
+import logger from '@/utils/logger';
 
 /**
  * Journeys Page - Entry point showing all available user journeys
@@ -216,7 +217,7 @@ const JourneysPage: FC<JourneysPageProps> = ({ journeyData }) => {
                   journey={journey}
                   onSelect={slug => {
                     // Handle journey selection
-                    console.log('Selected journey:', slug);
+                    logger.log('Selected journey:', slug);
                     // Redirect to the journey page
                     router.push(`/journey/${slug}`);
                   }}
@@ -245,7 +246,7 @@ export const getStaticProps: GetStaticProps = async () => {
     );
 
     if (validatedJourneyData.length === 0) {
-      console.warn('No valid journey data found');
+      logger.warn('No valid journey data found');
       return {
         props: {
           journeyData: [],
@@ -261,7 +262,7 @@ export const getStaticProps: GetStaticProps = async () => {
       revalidate: 60,
     };
   } catch (error) {
-    console.error('Error fetching journey data:', error);
+    logger.error('Error fetching journey data:', error);
     return {
       props: {
         journeyData: [],

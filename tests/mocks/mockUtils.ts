@@ -6,6 +6,7 @@
  */
 
 import { getTestJourneys } from './journeyMocks';
+import logger from '@/utils/logger';
 
 /**
  * Crée un mock pour getAllJourneys
@@ -22,7 +23,7 @@ export const createMockGetJourneysByPersona = () => {
   return jest.fn().mockImplementation((persona: string | undefined | null) => {
     // Vérifier si persona est undefined ou null pour éviter l'erreur toLowerCase()
     if (persona === undefined || persona === null) {
-      console.warn('mockGetJourneysByPersona a été appelé avec une persona undefined ou null');
+      logger.warn('mockGetJourneysByPersona a été appelé avec une persona undefined ou null');
       return Promise.resolve([]);
     }
     

@@ -1,4 +1,5 @@
 import type { JourneyData } from '@/types/journey';
+import logger from '@/utils/logger';
 
 export async function getJourneyData(slug: string): Promise<JourneyData> {
   try {
@@ -8,7 +9,7 @@ export async function getJourneyData(slug: string): Promise<JourneyData> {
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching journey data:', error);
+    logger.error('Error fetching journey data:', error);
     throw error;
   }
 }

@@ -16,6 +16,7 @@ import {
 // Import des sources de données existantes
 import { journeys as staticJourneys, Journey } from '@/utils/journeyData';
 import * as markdownParser from '@/utils/markdownParser';
+import logger from '@/utils/logger';
 
 /**
  * Détermine si nous sommes côté client ou serveur
@@ -119,7 +120,7 @@ export async function getAllJourneys(): Promise<JourneyContent[]> {
       return markdownJourneys;
     }
   } catch (error) {
-    console.warn('Error retrieving markdown journeys:', error);
+    logger.warn('Error retrieving markdown journeys:', error);
   }
   
   // Fallback sur les données statiques
@@ -139,7 +140,7 @@ export async function getAllJourneys(): Promise<JourneyContent[]> {
 export async function getJourneysByPersona(persona: PersonaType): Promise<JourneyContent[]> {
   // Vérifier si persona est undefined ou null pour éviter l'erreur toLowerCase()
   if (persona === undefined || persona === null) {
-    console.warn('getJourneysByPersona a été appelé avec une persona undefined ou null');
+    logger.warn('getJourneysByPersona a été appelé avec une persona undefined ou null');
     return [];
   }
   
@@ -208,17 +209,17 @@ const homePageJourneys = homePageJourneysRaw.map(journey => {
 
 export async function getJourneyBySlug(slug: string): Promise<JourneyContent | null> {
   if (!slug) {
-    console.error('getJourneyBySlug appelé avec un slug vide ou null');
+    logger.error('getJourneyBySlug appelé avec un slug vide ou null');
     return null;
   }
 
   const normalizedSlug = slug.toLowerCase().trim();
-  console.log(`Recherche du parcours avec le slug: ${normalizedSlug}`);
+  logger.log(`Recherche du parcours avec le slug: ${normalizedSlug}`);
   
   // Réimporter les données directement depuis le fichier source pour éviter les problèmes de cache
   // et s'assurer que nous avons les données les plus à jour
   const { journeys: latestJourneysRaw } = await import('@/data/journeys');
-  console.log('Données de parcours disponibles (réimportées):', latestJourneysRaw.map(j => j.metadata.slug));
+  logger.log('Données de parcours disponibles (réimportées):', latestJourneysRaw.map(j => j.metadata.slug));
   
   // Adapter les données réimportées pour qu'elles soient compatibles avec le type JourneyContent de @/types
   const latestJourneys = latestJourneysRaw.map(journey => {
@@ -261,19 +262,19 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyContent | n
   // Essayer d'abord de trouver le parcours dans les données réimportées
   const latestJourney = latestJourneys.find(journey => journey.metadata.slug === normalizedSlug);
   if (latestJourney) {
-    console.log(`Parcours trouvé dans les données réimportées: ${latestJourney.metadata.title}`);
+    logger.log(`Parcours trouvé dans les données réimportées: ${latestJourney.metadata.title}`);
     return latestJourney;
   }
   
   // Essayer ensuite dans les données de la page d'accueil
   const homePageJourney = homePageJourneys.find(journey => journey.metadata.slug === normalizedSlug);
   if (homePageJourney) {
-    console.log(`Parcours trouvé dans les données de la page d'accueil: ${homePageJourney.metadata.title}`);
+    logger.log(`Parcours trouvé dans les données de la page d'accueil: ${homePageJourney.metadata.title}`);
     return homePageJourney;
   }
   
-  console.log(`Parcours non trouvé dans les données pour le slug: ${normalizedSlug}`);
-  console.log('Recherche dans les données statiques...');
+  logger.log(`Parcours non trouvé dans les données pour le slug: ${normalizedSlug}`);
+  logger.log('Recherche dans les données statiques...');
   
   // Côté client, utilise les données statiques
   if (isClient) {
@@ -310,7 +311,7 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyContent | n
         const persona = titleMapping[matchingTitle];
         journey = allJourneys.find(j => j.metadata.profileType.toLowerCase() === persona.toLowerCase());
         if (journey) {
-          console.log(`Parcours trouvé par correspondance de titre: ${matchingTitle}`);
+          logger.log(`Parcours trouvé par correspondance de titre: ${matchingTitle}`);
         }
       }
     }
@@ -327,14 +328,14 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyContent | n
         const persona = slugMapping[normalizedSlug];
         journey = allJourneys.find(j => j.metadata.profileType.toLowerCase() === persona.toLowerCase());
         if (journey) {
-          console.log(`Parcours trouvé par mapping de slug: ${normalizedSlug} -> ${persona}`);
+          logger.log(`Parcours trouvé par mapping de slug: ${normalizedSlug} -> ${persona}`);
         }
       }
     }
     
     // Si toujours aucun résultat, prendre le premier parcours comme fallback
     if (!journey && allJourneys.length > 0) {
-      console.warn(`Aucun parcours trouvé pour le slug ${normalizedSlug}, utilisation du premier parcours disponible comme fallback`);
+      logger.warn(`Aucun parcours trouvé pour le slug ${normalizedSlug}, utilisation du premier parcours disponible comme fallback`);
       journey = allJourneys[0];
     }
     
@@ -349,7 +350,7 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyContent | n
       return markdownJourney;
     }
   } catch (error) {
-    console.warn(`Erreur lors de la récupération du journey ${normalizedSlug} depuis markdown:`, error);
+    logger.warn(`Erreur lors de la récupération du journey ${normalizedSlug} depuis markdown:`, error);
   }
   
   // Fallback sur les données statiques avec la même logique que côté client
@@ -404,7 +405,7 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyContent | n
   
   // Si toujours aucun résultat, prendre le premier parcours comme fallback
   if (!journey && allJourneys.length > 0) {
-    console.warn(`Aucun parcours trouvé pour le slug ${normalizedSlug}, utilisation du premier parcours disponible comme fallback`);
+    logger.warn(`Aucun parcours trouvé pour le slug ${normalizedSlug}, utilisation du premier parcours disponible comme fallback`);
     journey = allJourneys[0];
   }
   

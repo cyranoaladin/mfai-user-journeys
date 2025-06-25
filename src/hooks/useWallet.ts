@@ -3,6 +3,7 @@ import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { useCallback, useEffect } from 'react';
 import { useStore } from '../../utils/store';
+import logger from '@/utils/logger';
 
 export const useWallet = () => {
   const { toast } = useToast();
@@ -18,7 +19,7 @@ export const useWallet = () => {
         description: 'Your wallet has been connected successfully.',
       });
     } catch (error) {
-      console.error('Error connecting wallet:', error);
+      logger.error('Error connecting wallet:', error);
       toast({
         title: 'Connection Error',
         description: 'Failed to connect wallet. Please try again.',
@@ -35,7 +36,7 @@ export const useWallet = () => {
         description: 'Your wallet has been disconnected successfully.',
       });
     } catch (error) {
-      console.error('Error disconnecting wallet:', error);
+      logger.error('Error disconnecting wallet:', error);
       toast({
         title: 'Disconnection Error',
         description: 'Failed to disconnect wallet. Please try again.',

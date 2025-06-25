@@ -1,20 +1,21 @@
 const { watch } = require('fs');
 const { exec } = require('child_process');
 const path = require('path');
+const logger = require('../utils/logger').default;
 
 const tsConfigPath = path.join(__dirname, '..', 'tsconfig.json');
 
-console.log('🔍 Surveillance du serveur TypeScript démarrée...');
+logger.log('🔍 Surveillance du serveur TypeScript démarrée...');
 
 watch(tsConfigPath, eventType => {
   if (eventType === 'change') {
-    console.log('🔄 Redémarrage du serveur TypeScript...');
+    logger.log('🔄 Redémarrage du serveur TypeScript...');
     exec('npm run restart-ts', (error, stdout, stderr) => {
       if (error) {
-        console.error('❌ Erreur:', error);
+        logger.error('❌ Erreur:', error);
         return;
       }
-      console.log('✅ Serveur TypeScript redémarré avec succès');
+      logger.log('✅ Serveur TypeScript redémarré avec succès');
     });
   }
 });

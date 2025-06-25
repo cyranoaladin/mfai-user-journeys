@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from '@/utils/store';
 import { getJourneysByPersona } from '@/services/journeyService';
 import { PersonaType, JourneyContent } from '@/types';
+import logger from '@/utils/logger';
 
 /**
  * Custom hook to get current journey data based on selected persona
@@ -27,7 +28,7 @@ export const useCurrentJourney = () => {
           setJourney(null);
         }
       } catch (error) {
-        console.error('Error retrieving journey:', error);
+        logger.error('Error retrieving journey:', error);
         setJourney(null);
       }
     };

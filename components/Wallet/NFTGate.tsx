@@ -4,6 +4,7 @@ import { useStore } from '../../utils/store';
 // Les fonctions hasNFT et hasNFTPass sont commentées car nous avons désactivé la vérification NFT
 // import { hasNFT, hasNFTPass } from '../../utils/nftUtils';
 import WalletConnect from './WalletConnect';
+import logger from '@/utils/logger';
 
 /**
  * NFTGate Component
@@ -53,7 +54,7 @@ const NFTGate: FC<NFTGateProps> = ({ children, requiredNFT, requiredPass, fallba
 
         setHasAccess(access);
       } catch (error) {
-        console.error('Error checking NFT access:', error);
+        logger.error('Error checking NFT access:', error);
         setHasAccess(false);
       } finally {
         setChecking(false);

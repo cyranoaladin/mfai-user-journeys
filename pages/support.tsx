@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import MainLayout from '@/components/Layout/MainLayout';
 import { MessageSquare, HelpCircle, FileText, Send, Mail, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import logger from '@/utils/logger';
 
 /**
  * Support Page
@@ -24,7 +25,7 @@ const SupportPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would send the form data to a backend
-    console.log('Form submitted:', formData);
+    logger.log('Form submitted:', formData);
     setFormSubmitted(true);
     // Reset form after submission
     setFormData({

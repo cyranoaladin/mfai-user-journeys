@@ -1,4 +1,5 @@
 import { createJourneyServiceMocks } from '@/tests/mocks/mockUtils';
+import logger from '@/utils/logger';
 
 /**
  * Création des mocks standardisés pour les services
@@ -41,7 +42,7 @@ export const createTestStore = () => {
         const journeys = await mockGetAllJourneys();
         set({ journeys, loading: false });
       } catch (error) {
-        console.error('Erreur lors du chargement des journeys:', error);
+        logger.error('Erreur lors du chargement des journeys:', error);
         set({ 
           error: error instanceof Error ? `Error fetching journeys: ${error.message}` : 'Erreur inconnue',
           loading: false 

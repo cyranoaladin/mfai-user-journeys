@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { PhaseFeedbackData } from '../components/Journey/Phases/PhaseFeedback';
+import logger from '@/utils/logger';
 
 /**
  * Hook to handle phase feedback storage in localStorage
@@ -15,7 +16,7 @@ export function usePhaseFeedback(journeySlug: string) {
         setFeedbackData(JSON.parse(storedFeedback));
       }
     } catch (error) {
-      console.error('Error loading feedback data:', error);
+      logger.error('Error loading feedback data:', error);
     }
   }, [journeySlug]);
 
@@ -30,11 +31,11 @@ export function usePhaseFeedback(journeySlug: string) {
       localStorage.setItem(`journey_feedback_${journeySlug}`, JSON.stringify(updatedFeedback));
 
       // Log for debugging (can be connected to analytics later)
-      console.log('Feedback saved:', feedback);
+      logger.log('Feedback saved:', feedback);
 
       return true;
     } catch (error) {
-      console.error('Error saving feedback:', error);
+      logger.error('Error saving feedback:', error);
       return false;
     }
   };

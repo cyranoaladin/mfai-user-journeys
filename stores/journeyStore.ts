@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { JourneyContent, JourneyPhase, PersonaType } from '@/types';
 import { getAllJourneys, getJourneysByPersona, getJourneyBySlug, isPhaseUnlocked } from '@/services/journeyService';
+import logger from '@/utils/logger';
 
 /**
  * Interface for the journeys store
@@ -63,7 +64,7 @@ export const useJourneyStore = create<JourneyState>()(persist(
       
       set({ journeys, loading: false, error: null });
     } catch (error) {
-      console.error('Error loading journeys:', error);
+      logger.error('Error loading journeys:', error);
       
       // More descriptive and categorized error message
       let errorMessage = 'An error occurred while loading journeys.';
@@ -112,7 +113,7 @@ export const useJourneyStore = create<JourneyState>()(persist(
         set({ currentJourney: journeys[0] });
       }
     } catch (error) {
-      console.error(`Error loading journeys for ${persona}:`, error);
+      logger.error(`Error loading journeys for ${persona}:`, error);
       
       // More descriptive and categorized error message
       let errorMessage = `An error occurred while loading journeys for "${persona}".`;
@@ -159,7 +160,7 @@ export const useJourneyStore = create<JourneyState>()(persist(
         });
       }
     } catch (error) {
-      console.error(`Error loading journey ${slug}:`, error);
+      logger.error(`Error loading journey ${slug}:`, error);
       
       // More descriptive and categorized error message
       let errorMessage = `An error occurred while loading the journey "${slug}".`;

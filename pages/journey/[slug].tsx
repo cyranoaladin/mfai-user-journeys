@@ -15,6 +15,7 @@ import ProofSection from '../../components/Journey/Rewards/ProofSection';
 import JourneySidebar from '../../components/Journey/JourneySidebar';
 import VerticalTimeline from '../../components/Journey/Timeline/VerticalTimeline';
 import PhaseFeedback from '../../components/Journey/Phases/PhaseFeedback';
+import logger from '@/utils/logger';
 // Missing JourneyIntro component
 const JourneyIntro = ({ journey }: any) => (
   <div className="mb-8 bg-gradient-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-md rounded-xl p-5 border border-gray-700/50 shadow-lg">
@@ -123,7 +124,7 @@ const JourneyDetailPage: FC<JourneyDetailPageProps> = ({ journey }) => {
   // Effect to monitor journey changes (for debugging in development only)
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && !journey?.phases?.length) {
-      console.log('Notice: Using default phases as journey phases are empty');
+      logger.log('Notice: Using default phases as journey phases are empty');
     }
   }, [journey]);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -157,12 +158,12 @@ const JourneyDetailPage: FC<JourneyDetailPageProps> = ({ journey }) => {
   }, [safePhaseIndex, currentPhaseIndex]);
   
   useEffect(() => {
-    console.log('useEffect: storedPhase changed', storedPhase, 'currentPhaseIndex:', currentPhaseIndex);
+    logger.log('useEffect: storedPhase changed', storedPhase, 'currentPhaseIndex:', currentPhaseIndex);
     if (storedPhase) {
       // Find the index corresponding to the stored phase
       const index = phases.findIndex(p => p.name === (storedPhase as any).name);
       if (index !== -1 && index !== currentPhaseIndex) {
-        console.log('Updating currentPhaseIndex to match storedPhase index:', index);
+        logger.log('Updating currentPhaseIndex to match storedPhase index:', index);
         setCurrentPhaseIndex(index);
         // Force re-render
         setForceUpdate(prev => prev + 1);
@@ -371,7 +372,7 @@ const JourneyDetailPage: FC<JourneyDetailPageProps> = ({ journey }) => {
   
   // Handle feedback submission
   const handleFeedbackSubmit = useCallback((data: PhaseFeedbackData) => {
-    console.log('Feedback submitted:', data);
+    logger.log('Feedback submitted:', data);
     toast(`Feedback sent: Thank you for your experience feedback!`);
     // Add XP for submitting feedback
     addXP(25);
@@ -654,8 +655,8 @@ const JourneyDetailPage: FC<JourneyDetailPageProps> = ({ journey }) => {
                   whyItMatters: journey.whyItMatters as string,
                   finalRole: journey.finalRole as string
                 } as any}
-                onOpenZynoModal={() => console.log('Open Zyno modal')}
-                onNotifyClick={() => console.log('Notification clicked')}
+                onOpenZynoModal={() => logger.log('Open Zyno modal')}
+                onNotifyClick={() => logger.log('Notification clicked')}
                 mfaiBalance={'0'}
               />
             </div>
@@ -675,7 +676,7 @@ const JourneyDetailPage: FC<JourneyDetailPageProps> = ({ journey }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  console.log('Starting getStaticPaths');
+  logger.log('Starting getStaticPaths');
   
   // Simplified approach: hardcode all known slugs
   const hardcodedSlugs = [
@@ -687,7 +688,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params: { slug }
   }));
   
-  console.log('Generated paths:', paths);
+  logger.log('Generated paths:', paths);
 
   return {
     paths,
@@ -697,16 +698,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
-    console.log('Starting getStaticProps for slug:', params?.slug);
+    logger.log('Starting getStaticProps for slug:', params?.slug);
     const slug = params?.slug as string;
     
     // Import both data sources directly
     const { journeys: staticJourneys } = await import('@/utils/journeyData');
     const { journeys: dataJourneys } = await import('@/data/journeys');
     
-    console.log('Searching for journey with slug:', slug);
-    console.log('Available journeys in staticJourneys:', staticJourneys.map((j: any) => j.persona || j.label?.toLowerCase().replace(/ /g, '-')));
-    console.log('Available journeys in dataJourneys:', dataJourneys.map((j: any) => j.metadata?.slug));
+    logger.log('Searching for journey with slug:', slug);
+    logger.log('Available journeys in staticJourneys:', staticJourneys.map((j: any) => j.persona || j.label?.toLowerCase().replace(/ /g, '-')));
+    logger.log('Available journeys in dataJourneys:', dataJourneys.map((j: any) => j.metadata?.slug));
     
     // First look in static journeys
     let journey: any = null;
@@ -718,7 +719,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     );
     
     if (staticJourney) {
-      console.log('Journey found in staticJourneys:', staticJourney.label);
+      logger.log('Journey found in staticJourneys:', staticJourney.label);
       // Convert the static journey to the expected format
       journey = {
         metadata: {
@@ -753,13 +754,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       // Search in dataJourneys
       const dataJourney = dataJourneys.find((j: any) => j.metadata?.slug === slug);
       if (dataJourney) {
-        console.log('Journey found in dataJourneys:', dataJourney.metadata.title);
+        logger.log('Journey found in dataJourneys:', dataJourney.metadata.title);
         journey = dataJourney;
       }
     }
     
     if (!journey) {
-      console.log('No journey found for slug:', slug);
+      logger.log('No journey found for slug:', slug);
       return {
         notFound: true
       };
@@ -822,7 +823,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       revalidate: 3600,
     };
   } catch (error) {
-    console.error("Error in getStaticProps:", error);
+    logger.error("Error in getStaticProps:", error);
     // Return minimal data to avoid rendering errors
     return { 
       props: { 

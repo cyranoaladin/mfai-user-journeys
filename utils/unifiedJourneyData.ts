@@ -5,6 +5,7 @@
 
 import { journeys as staticJourneys } from './journeyData';
 import { journeys as dataJourneys } from '../data/journeys';
+import logger from '@/utils/logger';
 
 // Type pour les parcours unifiés
 export interface UnifiedJourney {
@@ -75,4 +76,4 @@ export function getJourneyBySlug(slug: string): UnifiedJourney | undefined {
 export const availableSlugs = unifiedJourneys.map(journey => journey.slug);
 
 // Journeys pour débogage
-console.log('Slugs disponibles:', availableSlugs);
+logger.log('Slugs disponibles:', availableSlugs);

@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { Button } from '../../ui/button';
 import { Textarea } from '../../ui/textarea';
 import { Star } from 'lucide-react';
+import logger from '@/utils/logger';
 
 export interface PhaseFeedbackData {
   phaseIndex: number;
@@ -47,7 +48,7 @@ const PhaseFeedback: FC<PhaseFeedbackProps> = ({
       setRating(0);
       setComment('');
     } catch (error) {
-      console.error('Error submitting feedback:', error);
+      logger.error('Error submitting feedback:', error);
     } finally {
       setIsSubmitting(false);
     }

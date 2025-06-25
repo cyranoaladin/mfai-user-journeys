@@ -6,6 +6,7 @@
  */
 
 import { useStore } from './store';
+import logger from '@/utils/logger';
 
 // Types
 export interface NFT {
@@ -34,7 +35,7 @@ export const getUserNFTs = async (
   // This is a mock implementation
   // In production, this would call Moralis, Thirdweb, or Metaplex APIs
 
-  console.log(`Fetching NFTs for ${address} on ${chain}`);
+  logger.log(`Fetching NFTs for ${address} on ${chain}`);
 
   // Mock data for development
   const mockNFTs: Record<string, NFT[]> = {
@@ -156,7 +157,7 @@ export const mintNFT = async (
   // Mock implementation
   // In production, this would call Thirdweb SDK, Metaplex, or a custom contract
 
-  console.log(`Minting NFT to ${address}`, metadata);
+  logger.log(`Minting NFT to ${address}`, metadata);
 
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 1500));
